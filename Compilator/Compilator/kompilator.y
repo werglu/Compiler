@@ -35,7 +35,6 @@ statement : typeSpecifier Ident Semicolon
 		  | Write String Semicolon
 		  | If OpenPar expresion ClosePar statement
 		  | If OpenPar expresion ClosePar statement Else statement
-		  | exp relationOperator exp
 		  | statement statement
 		  | expresion Semicolon
 		  | Read Ident Semicolon
@@ -65,8 +64,8 @@ exp2      : exp2 Equal exp3
 		  | exp3
           ;
 
-exp3      : exp Plus term
-          | exp Minus term
+exp3      : exp3 Plus term
+          | exp3 Minus term
           | term
           ;
 
@@ -81,16 +80,16 @@ bitwiseoperation : bitwiseoperation LogicalOr operation
                  ;
 
 operation  : OpenPar expresion ClosePar
-		  | simpleoperation operation
-          | IntNumber
-          | RealNumber
-          | Ident
-		  ;
+		   | simpleoperation operation
+           | IntNumber
+           | RealNumber
+           | Ident
+		   ;
 
 simpleoperation  : LogicalNegation
-           | BitwiseNegation
-		   | Minus
-		   ;
+                 | BitwiseNegation
+		         | Minus
+		         ;
 
 %%
 
