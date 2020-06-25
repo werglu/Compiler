@@ -1,11 +1,16 @@
 %using QUT.Gppg;
+%using compiler;
 %namespace GardensPoint
+
+%{
+	public int linen = 1;
+%}
 
 Ident       [a-zA-Z]+[a-zA-Z0-9]*
 IntNumber   ("0"|([1-9][0-9]*))
 RealNumber  ("0"|([1-9][0-9]*)\.[0-9]+)
-String		\".*\"
-Comment		"//".*\\n
+String		\"([^\\\"\n]|\\.)*\"
+Comment		\/\/[^\n\r]*
 
 %%
 
@@ -25,7 +30,7 @@ Comment		"//".*\\n
 {IntNumber}   { yylval.val=yytext; return (int)Tokens.IntNumber; }
 {RealNumber}  { yylval.val=yytext; return (int)Tokens.RealNumber; }
 {String}	  { yylval.val=yytext; return (int)Tokens.String; } 
-{Comment}     { yylval.val=yytext; return (int)Tokens.Comment; }
+{Comment}     { }
 "="           { return (int)Tokens.Assign; }
 "||"          { return (int)Tokens.Or; }
 "&&"          { return (int)Tokens.And; }
@@ -51,8 +56,8 @@ Comment		"//".*\\n
 " "           { }
 "\t"          { }
 "\r"          { }
-"\n"          { return (int)Tokens.Endl; }
+"\n"          { linen++; }
 <<EOF>>       { return (int)Tokens.Eof; }
-
+.             { return (int)Tokens.Error; }
 
 
