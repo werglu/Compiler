@@ -190,7 +190,7 @@ namespace compiler
 
     }
 
-    public class Number
+    public class Number : Expression
     {
         public VarType varType;
         public double value;
@@ -227,13 +227,17 @@ namespace compiler
 
     }
 
-    public class SimpleOperation : Expression
+    public class Bitwiseoperation : Expression
     {
         Expression LExp;
         Expression RExp;
+        string operationType;
 
-        public SimpleOperation(Number num)
+        public Bitwiseoperation(Expression _lexp, Expression _rexp, string _operationType)
         {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
         }
 
     }
@@ -244,7 +248,7 @@ namespace compiler
         Expression RExp;
         string operationType;
 
-        public Operation(Number num, Expression _lexp, Expression _rexp, string _operationType) 
+        public Operation(Expression _lexp, Expression _rexp, string _operationType) 
         {
             LExp = _lexp;
             RExp = _rexp;
@@ -252,5 +256,74 @@ namespace compiler
         }
 
 
+    }
+
+    public class TermOperation : Expression
+    {
+        Expression LExp;
+        Expression RExp;
+        string operationType;
+
+        public TermOperation(Expression _lexp, Expression _rexp, string _operationType)
+        {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
+        }
+    }
+
+    public class Exp3Operation : Expression
+    {
+        Expression LExp;
+        Expression RExp;
+        string operationType;
+
+        public Exp3Operation(Expression _lexp, Expression _rexp, string _operationType)
+        {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
+        }
+    }
+
+    public class Exp2Operation : Expression
+    {
+        Expression LExp;
+        Expression RExp;
+        string operationType;
+
+        public Exp2Operation(Expression _lexp, Expression _rexp, string _operationType)
+        {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
+        }
+    }
+    public class ExpOperation : Expression
+    {
+        Expression LExp;
+        Expression RExp;
+        string operationType;
+
+        public ExpOperation(Expression _lexp, Expression _rexp, string _operationType)
+        {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
+        }
+    }
+
+    public class ExpresionOperation : Expression
+    {
+        Expression LExp;
+        Expression RExp;
+        string operationType;
+
+        public ExpresionOperation(Expression _lexp, Expression _rexp, string _operationType)
+        {
+            LExp = _lexp;
+            RExp = _rexp;
+            operationType = _operationType;
+        }
     }
 }

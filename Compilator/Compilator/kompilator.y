@@ -5,9 +5,7 @@
 
 
 %{
-	public Program MyProgram {get; set;}
-	
-
+	public Program MyProgram {get; set;}	
 %}
 
 %union
@@ -28,7 +26,7 @@ public Expression expr;
 %type <list> declarations
 %type <listNode> declaration
 %type <num> number
-%type <expr> operation
+%type <expr> operation bitwiseoperation expresion exp exp2 exp3 term
 %type <val> simpleoperation
 
 
@@ -56,14 +54,12 @@ end   : CloseBraces Eof {  YYACCEPT;  }
 	  	Console.WriteLine("  line {0,3}:  syntax error",sc.linen);
 		Settings.errors++;
 		yyerrok(); 
-		YYABORT;
 	  }
 	  | Error 
 	  { 
 	  	Console.WriteLine("  line {0,3}:  syntax error",sc.linen);
 		Settings.errors++;
 		yyerrok(); 
-		YYABORT;
 	  }
 	  ;
 
@@ -94,44 +90,44 @@ statement1 : OpenBraces statement1 CloseBraces
 		  ;
 
 
-expresion : Ident Assign exp 
-		  | exp
+expresion : Ident Assign exp { $$ = new ExpresionOperation(new Number($1), $3, "Assign"); }
+		  | exp { $$ = $1; }
 		  ;
 
-exp       : exp Or exp2
-		  | exp And exp2
-		  | exp2
+exp       : exp Or exp2 { $$ = new ExpresionOperation($1, $3, "Or"); }
+		  | exp And exp2 { $$ = new ExpresionOperation($1, $3, "And"); }
+		  | exp2 { $$ = $1; }
 		  ;
 
-exp2      : exp2 Equal exp3
-          | exp2 NotEqual exp3
-		  | exp2 GreatherThan exp3
-		  | exp2 GreatherThanOrEqual exp3
-		  | exp2 LessThan exp3
-		  | exp2 LessThanOrEqual exp3
-		  | exp3
+exp2      : exp2 Equal exp3 { $$ = new ExpresionOperation($1, $3, "Equal"); }
+          | exp2 NotEqual exp3 { $$ = new ExpresionOperation($1, $3, "NotEqual"); }
+		  | exp2 GreatherThan exp3 { $$ = new ExpresionOperation($1, $3, "GreatherThan"); }
+		  | exp2 GreatherThanOrEqual exp3 { $$ = new ExpresionOperation($1, $3, "GreatherThanOrEqual"); }
+		  | exp2 LessThan exp3 { $$ = new ExpresionOperation($1, $3, "LessThan"); }
+		  | exp2 LessThanOrEqual exp3 { $$ = new ExpresionOperation($1, $3, "LessThanOrEqual"); }
+		  | exp3 { $$ = $1; }
           ;
 
-exp3      : exp3 Plus term
-          | exp3 Minus term
-          | term
+exp3      : exp3 Plus term { $$ = new Exp3Operation($1, $3, "Plus"); }
+          | exp3 Minus term  { $$ = new Exp3Operation($1, $3, "Minus"); }
+          | term { $$ = $1; }
           ;
 
 
-term      : term Multiplies bitwiseoperation
-          | term Divides bitwiseoperation
-          | bitwiseoperation
+term      : term Multiplies bitwiseoperation { $$ = new TermOperation($1, $3, "Multiplies"); }
+          | term Divides bitwiseoperation { $$ = new TermOperation($1, $3, "Divides"); }
+          | bitwiseoperation { $$ = $1; }
           ;
 
-bitwiseoperation : bitwiseoperation LogicalOr operation { }
-                 | bitwiseoperation LogicalAnd operation
-				 | operation
+bitwiseoperation : bitwiseoperation LogicalOr operation { $$ = new Bitwiseoperation($1, $3, "LogicalOr"); }
+                 | bitwiseoperation LogicalAnd operation { $$ = new Bitwiseoperation($1, $3, "LogicalAnd"); }
+				 | operation { $$ = $1; }
                  ;
 
 
 operation  : OpenPar exp ClosePar {  }
-		   | simpleoperation operation { }
-           | number {}
+		   | simpleoperation operation {  $$ = new Operation(null, $2, $1); }
+           | number { $$ = $1; }
 		   ;
 
 number     : IntNumber { $$ = new Number("0", $1); }
