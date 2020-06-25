@@ -145,11 +145,23 @@ namespace compiler
 
     public class Program
     {
-        List<Declarations> list;
+        List<Declarations> list = new List<Declarations>();
+        List<Statement> statList = new List<Statement>();
+
+        public Program(List<Declarations> _list, List<Statement> _statList)
+        {
+            list = _list;
+            statList = _statList;
+        }
 
         public Program(List<Declarations> _list)
         {
             list = _list;
+        }
+
+        public Program(List<Statement> _statList)
+        {
+            statList = _statList;
         }
     }
 
@@ -185,9 +197,6 @@ namespace compiler
 
             Settings.varDictionary.Add(name, (varType, value));
         }
-
-
-
     }
 
     public class Number : Expression
@@ -199,9 +208,9 @@ namespace compiler
         {
             if (_varType == "0")
                 varType = VarType.Int;
-            if (_varType == "1")
+            else if (_varType == "1")
                 varType = VarType.Double;
-            if (_varType == "2")
+            else if (_varType == "2")
                 varType = VarType.Bool;
             else
             {
@@ -217,102 +226,15 @@ namespace compiler
                 value = Settings.varDictionary[_varType].Item2;
                 return;
             }
-
             value = Double.Parse(_value);
         }
     }
 
     public abstract class Expression
     {
-
     }
 
-    public class Bitwiseoperation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public Bitwiseoperation(Expression _lexp, Expression _rexp, string _operationType)
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-
-    }
-
-    public class Operation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public Operation(Expression _lexp, Expression _rexp, string _operationType) 
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-
-
-    }
-
-    public class TermOperation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public TermOperation(Expression _lexp, Expression _rexp, string _operationType)
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-    }
-
-    public class Exp3Operation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public Exp3Operation(Expression _lexp, Expression _rexp, string _operationType)
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-    }
-
-    public class Exp2Operation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public Exp2Operation(Expression _lexp, Expression _rexp, string _operationType)
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-    }
-    public class ExpOperation : Expression
-    {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
-
-        public ExpOperation(Expression _lexp, Expression _rexp, string _operationType)
-        {
-            LExp = _lexp;
-            RExp = _rexp;
-            operationType = _operationType;
-        }
-    }
-
+ 
     public class ExpresionOperation : Expression
     {
         Expression LExp;
@@ -324,6 +246,91 @@ namespace compiler
             LExp = _lexp;
             RExp = _rexp;
             operationType = _operationType;
+        }
+    }
+
+    public abstract class Statement
+    { }
+
+    public class EmptyStatement : Statement
+    {
+
+    }
+
+    public class WhileStatement : Statement
+    {
+        public Expression exp;
+        public Statement stat;
+
+        public WhileStatement(Expression _exp, Statement _stat)
+        {
+            exp = _exp;
+            stat = _stat;
+        }
+    }
+
+    public class WriteStatement : Statement
+    {
+        public Expression exp = null;
+        public string str = null;
+
+        public WriteStatement(Expression _exp)
+        {
+            exp = _exp;
+        }
+
+        public WriteStatement(string _str)
+        {
+            str = _str;
+        }
+    }
+
+    public class IfStatement : Statement
+    {
+        public Expression exp = null;
+        public Statement stat;
+        public IfStatement(Expression _exp, Statement _stat)
+        {
+            exp = _exp;
+            stat = _stat;
+        }
+    }
+
+    public class IfElseStatement : Statement
+    {
+        public Expression exp = null;
+        public Statement stat;
+        public Statement elseStat;
+
+        public IfElseStatement(Expression _exp, Statement _stat, Statement _elsestat)
+        {
+            exp = _exp;
+            stat = _stat;
+            elseStat = _elsestat;
+        }
+    }
+
+    public class ReadStatement : Statement
+    {
+        public Number number;
+        public ReadStatement(Number _number)
+        {
+            number = _number;
+        }
+    }
+
+    public class StatementStatement : Statement
+    {
+        public Statement statement;
+        public Expression exp = null;
+
+        public StatementStatement(Statement _statement)
+        {
+            statement = _statement;
+        }
+        public StatementStatement(Expression _exp)
+        {
+            exp = _exp;
         }
     }
 }

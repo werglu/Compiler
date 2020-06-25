@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  WG
-// DateTime: 25.06.2020 23:25:13
+// DateTime: 26.06.2020 01:00:55
 // UserName: HP
-// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 25.06.2020 23:24:02>
+// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 26.06.2020 00:35:51>
 
 // options: lines gplex
 
@@ -39,6 +39,8 @@ public List<Declarations> list;
 public Declarations listNode;
 public Number num;
 public Expression expr;
+public Statement stat;
+public List<Statement> statementsList;
 }
 #line default
 // Abstract base class for GPLEX scanners
@@ -63,11 +65,11 @@ public class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 public class Parser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 25.06.2020 23:24:02
+  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 26.06.2020 00:35:51
 #line 8 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
 	public Program MyProgram {get; set;}	
 #line default
-  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 25.06.2020 23:24:02
+  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 26.06.2020 00:35:51
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -76,35 +78,35 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
   private static State[] states = new State[117];
   private static string[] nonTerms = new string[] {
       "declarations", "declaration", "number", "operation", "bitwiseoperation", 
-      "expresion", "exp", "exp2", "exp3", "term", "simpleoperation", "start", 
-      "$accept", "line", "end", "statement", "statement1", "err", };
+      "expresion", "exp", "exp2", "exp3", "term", "simpleoperation", "statement1", 
+      "statement", "start", "$accept", "line", "end", "err", };
 
   static Parser() {
-    states[0] = new State(new int[]{4,4,2,116},new int[]{-12,1,-14,3});
+    states[0] = new State(new int[]{4,4,2,116},new int[]{-14,1,-16,3});
     states[1] = new State(new int[]{3,2});
     states[2] = new State(-1);
     states[3] = new State(-2);
     states[4] = new State(new int[]{35,5});
-    states[5] = new State(new int[]{36,11,39,14,13,107,11,110,12,113,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-15,6,-1,7,-16,103,-2,105,-17,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[5] = new State(new int[]{36,11,39,14,13,107,11,110,12,113,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,6,-1,7,-13,103,-2,105,-12,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[6] = new State(-3);
-    states[7] = new State(new int[]{36,11,39,14,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-15,8,-16,9,-17,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[7] = new State(new int[]{36,11,39,14,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,8,-13,9,-12,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[8] = new State(-4);
-    states[9] = new State(new int[]{36,11,39,14},new int[]{-15,10});
+    states[9] = new State(new int[]{36,11,39,14},new int[]{-17,10});
     states[10] = new State(-5);
     states[11] = new State(new int[]{37,12,39,13});
     states[12] = new State(-8);
     states[13] = new State(-9);
     states[14] = new State(-10);
-    states[15] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100,36,-17,39,-17},new int[]{-16,16,-17,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[15] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100,36,-17,39,-17},new int[]{-13,16,-12,15,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[16] = new State(-16);
-    states[17] = new State(new int[]{36,20,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,18,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[17] = new State(new int[]{36,20,35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-12,18,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[18] = new State(new int[]{36,19});
     states[19] = new State(-18);
     states[20] = new State(-19);
     states[21] = new State(new int[]{33,22});
     states[22] = new State(new int[]{40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70},new int[]{-6,23,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[23] = new State(new int[]{34,24});
-    states[24] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,25,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[24] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-12,25,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[25] = new State(-20);
     states[26] = new State(new int[]{38,27});
     states[27] = new State(-21);
@@ -174,16 +176,16 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
     states[91] = new State(new int[]{33,92});
     states[92] = new State(new int[]{40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70},new int[]{-6,93,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[93] = new State(new int[]{34,94});
-    states[94] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,95,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[94] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-12,95,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[95] = new State(new int[]{6,96,35,-25,7,-25,10,-25,38,-25,9,-25,5,-25,40,-25,33,-25,31,-25,32,-25,28,-25,41,-25,42,-25,14,-25,15,-25,8,-25,36,-25,39,-25});
-    states[96] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-17,97,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
+    states[96] = new State(new int[]{35,17,7,21,10,26,38,28,9,29,5,91,40,34,33,47,31,62,32,63,28,64,41,66,42,67,14,69,15,70,8,100},new int[]{-12,97,-6,98,-7,90,-8,89,-9,82,-10,73,-5,72,-4,71,-11,60,-3,65});
     states[97] = new State(-26);
     states[98] = new State(new int[]{38,99});
     states[99] = new State(-27);
     states[100] = new State(new int[]{40,101});
     states[101] = new State(new int[]{38,102});
     states[102] = new State(-28);
-    states[103] = new State(new int[]{36,11,39,14},new int[]{-15,104});
+    states[103] = new State(new int[]{36,11,39,14},new int[]{-17,104});
     states[104] = new State(-6);
     states[105] = new State(new int[]{13,107,11,110,12,113,36,-12,39,-12,35,-12,7,-12,10,-12,38,-12,9,-12,5,-12,40,-12,33,-12,31,-12,32,-12,28,-12,41,-12,42,-12,14,-12,15,-12,8,-12},new int[]{-1,106,-2,105});
     states[106] = new State(-11);
@@ -200,34 +202,34 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
 
     for (int sNo = 0; sNo < states.Length; sNo++) states[sNo].number = sNo;
 
-    rules[1] = new Rule(-13, new int[]{-12,3});
-    rules[2] = new Rule(-12, new int[]{-14});
-    rules[3] = new Rule(-14, new int[]{4,35,-15});
-    rules[4] = new Rule(-14, new int[]{4,35,-1,-15});
-    rules[5] = new Rule(-14, new int[]{4,35,-1,-16,-15});
-    rules[6] = new Rule(-14, new int[]{4,35,-16,-15});
-    rules[7] = new Rule(-14, new int[]{2});
-    rules[8] = new Rule(-15, new int[]{36,37});
-    rules[9] = new Rule(-15, new int[]{36,39});
-    rules[10] = new Rule(-15, new int[]{39});
+    rules[1] = new Rule(-15, new int[]{-14,3});
+    rules[2] = new Rule(-14, new int[]{-16});
+    rules[3] = new Rule(-16, new int[]{4,35,-17});
+    rules[4] = new Rule(-16, new int[]{4,35,-1,-17});
+    rules[5] = new Rule(-16, new int[]{4,35,-1,-13,-17});
+    rules[6] = new Rule(-16, new int[]{4,35,-13,-17});
+    rules[7] = new Rule(-16, new int[]{2});
+    rules[8] = new Rule(-17, new int[]{36,37});
+    rules[9] = new Rule(-17, new int[]{36,39});
+    rules[10] = new Rule(-17, new int[]{39});
     rules[11] = new Rule(-1, new int[]{-2,-1});
     rules[12] = new Rule(-1, new int[]{-2});
     rules[13] = new Rule(-2, new int[]{13,40,38});
     rules[14] = new Rule(-2, new int[]{11,40,38});
     rules[15] = new Rule(-2, new int[]{12,40,38});
-    rules[16] = new Rule(-16, new int[]{-17,-16});
-    rules[17] = new Rule(-16, new int[]{-17});
-    rules[18] = new Rule(-17, new int[]{35,-17,36});
-    rules[19] = new Rule(-17, new int[]{35,36});
-    rules[20] = new Rule(-17, new int[]{7,33,-6,34,-17});
-    rules[21] = new Rule(-17, new int[]{10,38});
-    rules[22] = new Rule(-17, new int[]{38});
-    rules[23] = new Rule(-17, new int[]{9,-6,38});
-    rules[24] = new Rule(-17, new int[]{9,43,38});
-    rules[25] = new Rule(-17, new int[]{5,33,-6,34,-17});
-    rules[26] = new Rule(-17, new int[]{5,33,-6,34,-17,6,-17});
-    rules[27] = new Rule(-17, new int[]{-6,38});
-    rules[28] = new Rule(-17, new int[]{8,40,38});
+    rules[16] = new Rule(-13, new int[]{-12,-13});
+    rules[17] = new Rule(-13, new int[]{-12});
+    rules[18] = new Rule(-12, new int[]{35,-12,36});
+    rules[19] = new Rule(-12, new int[]{35,36});
+    rules[20] = new Rule(-12, new int[]{7,33,-6,34,-12});
+    rules[21] = new Rule(-12, new int[]{10,38});
+    rules[22] = new Rule(-12, new int[]{38});
+    rules[23] = new Rule(-12, new int[]{9,-6,38});
+    rules[24] = new Rule(-12, new int[]{9,43,38});
+    rules[25] = new Rule(-12, new int[]{5,33,-6,34,-12});
+    rules[26] = new Rule(-12, new int[]{5,33,-6,34,-12,6,-12});
+    rules[27] = new Rule(-12, new int[]{-6,38});
+    rules[28] = new Rule(-12, new int[]{8,40,38});
     rules[29] = new Rule(-6, new int[]{40,16,-7});
     rules[30] = new Rule(-6, new int[]{-7});
     rules[31] = new Rule(-7, new int[]{-7,17,-8});
@@ -279,34 +281,34 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
     switch (action)
     {
       case 2: // start -> line
-#line 35 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 38 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                  { Console.WriteLine("start");  YYAccept(); }
 #line default
         break;
       case 3: // line -> Program, OpenBraces, end
-#line 38 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 41 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                    { MyProgram = new Program(new List<Declarations>());  }
 #line default
         break;
       case 4: // line -> Program, OpenBraces, declarations, end
-#line 39 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 42 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                                 { MyProgram = new Program(ValueStack[ValueStack.Depth-2].list);  }
 #line default
         break;
       case 5: // line -> Program, OpenBraces, declarations, statement, end
-#line 40 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                                    { MyProgram = new Program(ValueStack[ValueStack.Depth-3].list);  }
+#line 43 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                                    { MyProgram = new Program(ValueStack[ValueStack.Depth-3].list, ValueStack[ValueStack.Depth-2].statementsList);  }
 #line default
         break;
       case 6: // line -> Program, OpenBraces, statement, end
-#line 41 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                       { MyProgram = new Program(new List<Declarations>()); }
+#line 44 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                       { MyProgram = new Program(ValueStack[ValueStack.Depth-2].statementsList); }
 #line default
         break;
       case 7: // line -> error
-#line 43 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 46 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
    { 
-				Console.WriteLine("  line {0,3}:  syntax error",sc.linen);
+				Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
 				Settings.errors++;
 				yyerrok(); 
 				YYAbort();
@@ -314,235 +316,295 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
 #line default
         break;
       case 8: // end -> CloseBraces, Eof
-#line 51 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 54 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                         {  YYAccept();  }
 #line default
         break;
       case 9: // end -> CloseBraces, Error
-#line 53 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 56 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
    {
-	  	Console.WriteLine("  line {0,3}:  syntax error",sc.linen);
+	  	Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
 		Settings.errors++;
 		yyerrok(); 
 	  }
 #line default
         break;
       case 10: // end -> Error
-#line 59 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 62 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
    { 
-	  	Console.WriteLine("  line {0,3}:  syntax error",sc.linen);
+	  	Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
 		Settings.errors++;
 		yyerrok(); 
 	  }
 #line default
         break;
       case 11: // declarations -> declaration, declarations
-#line 66 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 69 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                          { ValueStack[ValueStack.Depth-1].list.Add(ValueStack[ValueStack.Depth-2].listNode); CurrentSemanticValue.list = ValueStack[ValueStack.Depth-1].list; }
 #line default
         break;
       case 12: // declarations -> declaration
-#line 67 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 70 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                             { CurrentSemanticValue.list = new List<Declarations>{ValueStack[ValueStack.Depth-1].listNode};  }
 #line default
         break;
       case 13: // declaration -> Bool, Ident, Semicolon
-#line 70 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 73 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                    { CurrentSemanticValue.listNode = new Declarations(ValueStack[ValueStack.Depth-2].val, 2); }
 #line default
         break;
       case 14: // declaration -> Int, Ident, Semicolon
-#line 71 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 74 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                          { CurrentSemanticValue.listNode = new Declarations(ValueStack[ValueStack.Depth-2].val, 0); }
 #line default
         break;
       case 15: // declaration -> Double, Ident, Semicolon
-#line 72 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 75 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                             { CurrentSemanticValue.listNode = new Declarations(ValueStack[ValueStack.Depth-2].val, 1); }
 #line default
         break;
-      case 24: // statement1 -> Write, String, Semicolon
+      case 16: // statement -> statement1, statement
+#line 78 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                 {  ValueStack[ValueStack.Depth-1].statementsList.Add(ValueStack[ValueStack.Depth-2].stat); CurrentSemanticValue.statementsList = ValueStack[ValueStack.Depth-1].statementsList; }
+#line default
+        break;
+      case 17: // statement -> statement1
+#line 79 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                 { CurrentSemanticValue.statementsList = new List<Statement>{ValueStack[ValueStack.Depth-1].stat};  }
+#line default
+        break;
+      case 18: // statement1 -> OpenBraces, statement1, CloseBraces
+#line 82 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                               { CurrentSemanticValue.stat = new StatementStatement(ValueStack[ValueStack.Depth-2].stat);  }
+#line default
+        break;
+      case 19: // statement1 -> OpenBraces, CloseBraces
+#line 83 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                              { CurrentSemanticValue.stat = new EmptyStatement(); }
+#line default
+        break;
+      case 20: // statement1 -> While, OpenPar, expresion, ClosePar, statement1
+#line 84 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                                  { CurrentSemanticValue.stat = new WhileStatement(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].stat);  }
+#line default
+        break;
+      case 21: // statement1 -> Return, Semicolon
 #line 85 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                             { }
+                        { CurrentSemanticValue.stat = new EmptyStatement(); }
+#line default
+        break;
+      case 22: // statement1 -> Semicolon
+#line 86 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                { CurrentSemanticValue.stat = new EmptyStatement(); }
+#line default
+        break;
+      case 23: // statement1 -> Write, expresion, Semicolon
+#line 87 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                {  CurrentSemanticValue.stat = new WriteStatement(ValueStack[ValueStack.Depth-2].expr);  }
+#line default
+        break;
+      case 24: // statement1 -> Write, String, Semicolon
+#line 88 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                             {  CurrentSemanticValue.stat = new WriteStatement(ValueStack[ValueStack.Depth-2].val);  }
+#line default
+        break;
+      case 25: // statement1 -> If, OpenPar, expresion, ClosePar, statement1
+#line 89 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                               { CurrentSemanticValue.stat = new IfStatement(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].stat);  }
+#line default
+        break;
+      case 26: // statement1 -> If, OpenPar, expresion, ClosePar, statement1, Else, statement1
+#line 90 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                                               {  CurrentSemanticValue.stat = new IfElseStatement(ValueStack[ValueStack.Depth-5].expr, ValueStack[ValueStack.Depth-3].stat, ValueStack[ValueStack.Depth-1].stat);  }
+#line default
+        break;
+      case 27: // statement1 -> expresion, Semicolon
+#line 91 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                          { CurrentSemanticValue.stat = new StatementStatement(ValueStack[ValueStack.Depth-2].expr); }
+#line default
+        break;
+      case 28: // statement1 -> Read, Ident, Semicolon
+#line 92 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                           { CurrentSemanticValue.stat = new ReadStatement(new Number(ValueStack[ValueStack.Depth-2].val)); }
 #line default
         break;
       case 29: // expresion -> Ident, Assign, exp
-#line 93 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 96 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                              { CurrentSemanticValue.expr = new ExpresionOperation(new Number(ValueStack[ValueStack.Depth-3].val), ValueStack[ValueStack.Depth-1].expr, "Assign"); }
 #line default
         break;
       case 30: // expresion -> exp
-#line 94 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 97 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
           { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 31: // exp -> exp, Or, exp2
-#line 97 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                        { CurrentSemanticValue.expr = new ExpOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Or"); }
+#line 100 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                        { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Or"); }
 #line default
         break;
       case 32: // exp -> exp, And, exp2
-#line 98 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                   { CurrentSemanticValue.expr = new ExpOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "And"); }
+#line 101 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                   { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "And"); }
 #line default
         break;
       case 33: // exp -> exp2
-#line 99 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 102 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
            { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 34: // exp2 -> exp2, Equal, exp3
-#line 102 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                            { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Equal"); }
+#line 105 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                            { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Equal"); }
 #line default
         break;
       case 35: // exp2 -> exp2, NotEqual, exp3
-#line 103 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                               { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "NotEqual"); }
+#line 106 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                               { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "NotEqual"); }
 #line default
         break;
       case 36: // exp2 -> exp2, GreatherThan, exp3
-#line 104 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                             { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "GreatherThan"); }
+#line 107 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                             { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "GreatherThan"); }
 #line default
         break;
       case 37: // exp2 -> exp2, GreatherThanOrEqual, exp3
-#line 105 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                    { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "GreatherThanOrEqual"); }
+#line 108 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                    { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "GreatherThanOrEqual"); }
 #line default
         break;
       case 38: // exp2 -> exp2, LessThan, exp3
-#line 106 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                         { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LessThan"); }
+#line 109 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                         { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LessThan"); }
 #line default
         break;
       case 39: // exp2 -> exp2, LessThanOrEqual, exp3
-#line 107 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                { CurrentSemanticValue.expr = new Exp2Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LessThanOrEqual"); }
+#line 110 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LessThanOrEqual"); }
 #line default
         break;
       case 40: // exp2 -> exp3
-#line 108 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 111 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
            { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 41: // exp3 -> exp3, Plus, term
-#line 111 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                           { CurrentSemanticValue.expr = new Exp3Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Plus"); }
+#line 114 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                           { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Plus"); }
 #line default
         break;
       case 42: // exp3 -> exp3, Minus, term
-#line 112 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                             { CurrentSemanticValue.expr = new Exp3Operation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Minus"); }
+#line 115 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                             { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Minus"); }
 #line default
         break;
       case 43: // exp3 -> term
-#line 113 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 116 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                  { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 44: // term -> term, Multiplies, bitwiseoperation
-#line 117 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                             { CurrentSemanticValue.expr = new TermOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Multiplies"); }
+#line 120 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                             { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Multiplies"); }
 #line default
         break;
       case 45: // term -> term, Divides, bitwiseoperation
-#line 118 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                          { CurrentSemanticValue.expr = new TermOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Divides"); }
+#line 121 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                          { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "Divides"); }
 #line default
         break;
       case 46: // term -> bitwiseoperation
-#line 119 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 122 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                              { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 47: // bitwiseoperation -> bitwiseoperation, LogicalOr, operation
-#line 122 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                                        { CurrentSemanticValue.expr = new Bitwiseoperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LogicalOr"); }
+#line 125 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                                        { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LogicalOr"); }
 #line default
         break;
       case 48: // bitwiseoperation -> bitwiseoperation, LogicalAnd, operation
-#line 123 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                                         { CurrentSemanticValue.expr = new Bitwiseoperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LogicalAnd"); }
+#line 126 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                                         { CurrentSemanticValue.expr = new ExpresionOperation(ValueStack[ValueStack.Depth-3].expr, ValueStack[ValueStack.Depth-1].expr, "LogicalAnd"); }
 #line default
         break;
       case 49: // bitwiseoperation -> operation
-#line 124 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 127 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                  { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].expr; }
 #line default
         break;
       case 50: // operation -> OpenPar, exp, ClosePar
-#line 128 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 131 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                   {  }
 #line default
         break;
       case 51: // operation -> simpleoperation, operation
-#line 129 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                                 {  CurrentSemanticValue.expr = new Operation(null, ValueStack[ValueStack.Depth-1].expr, ValueStack[ValueStack.Depth-2].val); }
+#line 132 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+                                 {  CurrentSemanticValue.expr = new ExpresionOperation(null, ValueStack[ValueStack.Depth-1].expr, ValueStack[ValueStack.Depth-2].val); }
 #line default
         break;
       case 52: // operation -> number
-#line 130 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 133 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                     { CurrentSemanticValue.expr = ValueStack[ValueStack.Depth-1].num; }
 #line default
         break;
       case 53: // number -> IntNumber
-#line 133 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 136 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                        { CurrentSemanticValue.num = new Number("0", ValueStack[ValueStack.Depth-1].val); }
 #line default
         break;
       case 54: // number -> RealNumber
-#line 134 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 137 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                         { CurrentSemanticValue.num = new Number("1", ValueStack[ValueStack.Depth-1].val); }
 #line default
         break;
       case 55: // number -> Ident
-#line 135 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 138 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                    { CurrentSemanticValue.num = new Number(ValueStack[ValueStack.Depth-1].val); }
 #line default
         break;
       case 56: // number -> True
-#line 136 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 139 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
             { CurrentSemanticValue.num = new Number("2", "1"); }
 #line default
         break;
       case 57: // number -> False
-#line 137 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 140 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
              { CurrentSemanticValue.num = new Number("2", "0"); }
 #line default
         break;
       case 58: // simpleoperation -> LogicalNegation
-#line 140 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 143 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                    { CurrentSemanticValue.val = "LogicalNegation";  }
 #line default
         break;
       case 59: // simpleoperation -> BitwiseNegation
-#line 141 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 144 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                    { CurrentSemanticValue.val = "BitwiseNegation"; }
 #line default
         break;
       case 60: // simpleoperation -> Minus
-#line 142 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 145 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
              { CurrentSemanticValue.val = "Minus"; }
 #line default
         break;
       case 61: // simpleoperation -> OpenPar, Bool, ClosePar
-#line 143 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 146 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                              { CurrentSemanticValue.val = "BoolConversion"; }
 #line default
         break;
       case 62: // simpleoperation -> OpenPar, Int, ClosePar
-#line 144 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 147 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                             { CurrentSemanticValue.val = "IntConversion"; }
 #line default
         break;
       case 63: // simpleoperation -> OpenPar, Double, ClosePar
-#line 145 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 148 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
                                { CurrentSemanticValue.val = "DoubleConversion"; }
 #line default
         break;
       case 64: // err -> EOF
-#line 148 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
+#line 151 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
              { YYAbort(); }
 #line default
         break;
@@ -560,8 +622,7 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
         return CharToString((char)terminal);
   }
 
-#line 151 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
- int lineno=1;
+#line 154 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
 
 public Scanner sc;
 

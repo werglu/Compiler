@@ -6,9 +6,9 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  WG
-//  DateTime: 25.06.2020 23:25:14
+//  DateTime: 26.06.2020 01:00:55
 //  UserName: HP
-//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 25.06.2020 22:36:10>
+//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 25.06.2020 23:42:01>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: verbose, parser, minimize
@@ -133,7 +133,7 @@ namespace GardensPoint
         const int INITIAL = 0;
 
 #region user code
-public int linen = 1;
+public int lineno = 1;
 #endregion user code
 
         int state;
@@ -1045,10 +1045,10 @@ return (int)Tokens.Error;
 { }
             break;
         case 3: // Recognized '"\n"',	Shortest string "\n"
-linen++;
+lineno++;
             break;
         case 4: // Recognized '"\r"',	Shortest string "\r"
-{ }
+{  }
             break;
         case 5: // Recognized '" "',	Shortest string "\x20"
 { }

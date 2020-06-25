@@ -3,7 +3,7 @@
 %namespace GardensPoint
 
 %{
-	public int linen = 1;
+	public int lineno = 1;
 %}
 
 Ident       [a-zA-Z]+[a-zA-Z0-9]*
@@ -55,8 +55,8 @@ Comment		\/\/[^\n\r]*
 ";"           { return (int)Tokens.Semicolon; }
 " "           { }
 "\t"          { }
-"\r"          { }
-"\n"          { linen++; }
+"\r"          {  }
+"\n"          { lineno++; }
 <<EOF>>       { return (int)Tokens.Eof; }
 .             { return (int)Tokens.Error; }
 
