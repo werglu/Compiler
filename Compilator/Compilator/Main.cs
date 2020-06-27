@@ -861,13 +861,41 @@ namespace compiler
 
         public WriteStatement(string _str)
         {
-            str = _str.Substring(1, _str.Length-2);
-            if(str=="\\n") Console.WriteLine();
-            else
-            Console.Write(str);
+            str = _str;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override void GenCode(StreamWriter sw)
+        {
+            if(str != null)
+            {
+                Settings.EmitCode(sw, $"ldstr {str}");                
+                Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+            }
+            else if(exp != null)
+            {
+                var value = exp.GetValue();
+                if (value.type == VarType.Double)
+                {
+                    var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
+                    Settings.EmitCode(sw, $"ldstr \"{culture}\"");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+
+                }
+                if (value.type == VarType.Bool)
+                {
+                    string val = value.value == 0 ? "False" : "True";
+                    Settings.EmitCode(sw, $"ldstr \"{val}\"");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+                }
+                if (value.type == VarType.Int)
+                {
+                    int val = (int)value.value;
+                    Settings.EmitCode(sw, $"ldstr \"{val.ToString()}\"");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+                }
+
+            }
+        }
 
     }
 
@@ -949,7 +977,10 @@ namespace compiler
             statement = _statement;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override void GenCode(StreamWriter sw)
+        {
+
+        }
 
 
     }
