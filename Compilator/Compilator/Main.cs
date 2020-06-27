@@ -161,22 +161,16 @@ namespace compiler
 
         public void GenCode(StreamWriter sw)
         {
-            Console.WriteLine("progeam");
+            Console.WriteLine("program");
             Console.WriteLine("{");
-            if(list.Count > 0)
-            {
-                Settings.EmitCode(sw, ".locals init (");
-                list[0].GenCode(sw);
-            }
-            for (int i=1; i<list.Count;i++)
-            {
-                Settings.EmitCode(sw, ",");
 
+            for (int i=0; i<list.Count;i++)
+            {
                 list[i].GenCode(sw);
             }
-            if (list.Count > 0)
+            for (int i=statList.Count-1; i>=0; i--)
             {
-                Settings.EmitCode(sw, ")");
+                statList[i].GenCode(sw);
             }
             Console.WriteLine("}");
 
@@ -236,7 +230,7 @@ namespace compiler
             if (varType == VarType.Double) typ = "float64 D_";
             if (varType == VarType.Int) typ = "int32 I_";
             if (varType == VarType.Bool) typ = "bool B_";
-            Settings.EmitCode(sw, $"{typ}{name}");            
+            Settings.EmitCode(sw, $".locals init ({typ}{name})");
         }
 
     }
@@ -806,10 +800,24 @@ namespace compiler
     }
 
     public abstract class Statement
-    { }
+    {
+        public abstract void GenCode(StreamWriter sw);
+    }
 
     public class EmptyStatement : Statement
-    { }
+    {
+        public override void GenCode(StreamWriter sw) {  }
+
+    }
+
+    public class ReturnStatement : Statement
+    {
+        public override void GenCode(StreamWriter sw)
+        {
+            Settings.EmitCode(sw, "leave EndMain");
+              
+        }
+    }
 
     public class WhileStatement : Statement
     {
@@ -827,6 +835,9 @@ namespace compiler
             exp = _exp;
             stat = _stat;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class WriteStatement : Statement
@@ -855,6 +866,9 @@ namespace compiler
             else
             Console.Write(str);
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class IfStatement : Statement
@@ -868,6 +882,9 @@ namespace compiler
             exp = _exp;
             stat = _stat;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class IfElseStatement : Statement
@@ -884,6 +901,9 @@ namespace compiler
             stat = _stat;
             elseStat = _elsestat;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class ReadStatement : Statement
@@ -895,6 +915,9 @@ namespace compiler
 
             number = _number;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class StatementStatement : Statement
@@ -912,6 +935,9 @@ namespace compiler
             var x = _exp.GetValue();
             exp = _exp;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
     }
 
     public class ListStatement : Statement
@@ -922,6 +948,9 @@ namespace compiler
         {
             statement = _statement;
         }
+
+        public override void GenCode(StreamWriter sw) { }
+
 
     }
 }

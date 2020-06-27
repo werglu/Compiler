@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  WG
-// DateTime: 27.06.2020 20:08:17
+// DateTime: 27.06.2020 22:10:34
 // UserName: HP
-// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 19:19:06>
+// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 21:43:56>
 
 // options: lines gplex
 
@@ -65,11 +65,11 @@ public class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 public class Parser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 19:19:06
+  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 21:43:56
 #line 7 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
 	public Program MyProgram {get; set;}	
 #line default
-  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 19:19:06
+  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 27.06.2020 21:43:56
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;
@@ -388,7 +388,7 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
         break;
       case 21: // statement1 -> Return, Semicolon
 #line 84 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
-                        { CurrentSemanticValue.stat = new EmptyStatement(); }
+                        { CurrentSemanticValue.stat = new ReturnStatement(); }
 #line default
         break;
       case 22: // statement1 -> Write, expresion, Semicolon
