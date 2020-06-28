@@ -585,6 +585,38 @@ namespace compiler
                 RExp.GenCode(sw);
                 Settings.EmitCode(sw, "conv.r8");
             }
+            if (operationType == "Multiplies" || operationType == "Divides" || operationType == "Plus" || operationType == "Minus")
+            {
+                bool check = false;
+                var Ltype = LExp.GetValue();
+                var Rtype = RExp.GetValue();
+
+                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                LExp.GenCode(sw);
+                if(check)
+                {
+                    if(Ltype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+                RExp.GenCode(sw);
+                if (check)
+                {
+                    if (Rtype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+                if (operationType == "Multiplies")
+                    Settings.EmitCode(sw, "mul");
+                if (operationType == "Divides")
+                    Settings.EmitCode(sw, "div");
+                if (operationType == "Plus")
+                    Settings.EmitCode(sw, "add");
+                if (operationType == "Minus")
+                    Settings.EmitCode(sw, "sub");
+            }
 
             return s;
         }
