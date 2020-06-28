@@ -232,7 +232,6 @@ namespace compiler
             if (varType == VarType.Bool) typ = "bool B_";
             Settings.EmitCode(sw, $".locals init ({typ}{name})");
         }
-
     }
 
     public class Number : Expression
@@ -241,7 +240,8 @@ namespace compiler
         public double value;
         public string name = "";
         public int lineno;
-        public Number (string _varType, int _lineno, string _value = "")
+        public bool ident = false;
+        public Number(string _varType, int _lineno, string _value = "")
         {
             lineno = _lineno;
             if (_varType == "0")
@@ -252,6 +252,7 @@ namespace compiler
                 varType = VarType.Bool;
             else
             {
+                ident = true;
                 if (!Settings.varDictionary.ContainsKey(_varType))
                 {
                     Console.WriteLine($"Variable with name {_varType} is not declared! - line: " + lineno.ToString());
@@ -268,7 +269,6 @@ namespace compiler
             value = Double.Parse(_value.Replace('.', ','));
         }
 
-
         public override VarType CheckType()
         {
             return varType;
@@ -279,20 +279,39 @@ namespace compiler
             return new ValueProperties(name, varType, value);
         }
 
-
-        public override string GenCode()
+        public override string GenCode(StreamWriter sw)
         {
-            return value.ToString() ;
+            if(varType == VarType.Int && !ident)
+            {
+                Settings.EmitCode(sw, $"ldc.i4.s {(int)value}");
+            }
+            else if (varType == VarType.Bool && !ident)
+            {
+                int val = value == 0 ? 0 : 1;
+                Settings.EmitCode(sw, $"ldc.i4.{val}");
+            }
+            else if (varType == VarType.Double && !ident)
+            {
+                Settings.EmitCode(sw, $"ldc.r8 {value}");
+            }
+            else if(ident)
+            {
+                if (varType == VarType.Int)
+                    Settings.EmitCode(sw, $"ldloca I_{name}");
+                if (varType == VarType.Bool)
+                    Settings.EmitCode(sw, $"ldloca B_{name}");
+                if (varType == VarType.Double)
+                    Settings.EmitCode(sw, $"ldloca D_{name}");
+            }
+            return null;
         }
-
-
     }
 
     public abstract class Expression
     {
         public abstract VarType CheckType();
         public abstract ValueProperties GetValue();
-        public abstract string GenCode();
+        public abstract string GenCode(StreamWriter sw);
     }
 
 
@@ -305,15 +324,6 @@ namespace compiler
 
         public ExpresionOperation(Expression _lexp, Expression _rexp, string _operationType, int _lineno)
         {
-            //if (_lexp != null)
-            //{
-            //    _lexp.CheckType();
-            //}
-            //if (_rexp != null)
-            //{
-            //    _rexp.CheckType();
-            //}
-
             LExp = _lexp;
             RExp = _rexp;
             operationType = _operationType;
@@ -460,12 +470,6 @@ namespace compiler
                         return new ValueProperties(null, VarType.Bool, val);
                     }
                 }
-                //else
-                //{
-                //    Console.WriteLine("Type mismatch!");
-                //    Settings.errors++;
-                //}
-
             }
             if (operationType == "Equal" || operationType == "NotEqual")
             {
@@ -531,9 +535,30 @@ namespace compiler
         }
 
 
-        public override string GenCode()
+        public override string GenCode(StreamWriter sw)
         {
-
+            if(operationType == "Assign")
+            {
+                RExp.GenCode(sw);
+                var Lval = LExp.GetValue();
+                //var Rval = RExp.GetValue();
+                if (Lval.type == VarType.Bool)
+                {
+                    //int val = Rval.value == 0 ? 0 : 1;
+                    //Settings.EmitCode(sw, $"ldc.i4.{val}");
+                    Settings.EmitCode(sw, $"stloc.s B_{Lval.name}");
+                }
+                if (Lval.type == VarType.Double)
+                {
+                    //Settings.EmitCode(sw, $"ldc.r8 {Rval.value}");
+                    Settings.EmitCode(sw, $"stloc.s D_{Lval.name}");
+                }
+                if (Lval.type == VarType.Int)
+                {
+                    //Settings.EmitCode(sw, $"ldc.i4.s {Rval.value}");
+                    Settings.EmitCode(sw, $"stloc.s I_{Lval.name}");
+                }
+            }
             return null;
         }
 
@@ -848,14 +873,6 @@ namespace compiler
         public WriteStatement(Expression _exp)
         {
             _exp.CheckType();
-            var val = _exp.GetValue();
-            if(val.type == VarType.Bool)
-                Console.Write(val.value == 0? "False" : "True");
-            if (val.type == VarType.Int)
-                Console.Write(((int)val.value).ToString());
-            if (val.type == VarType.Double)
-                Console.Write(val.value.ToString().Replace(',', '.'));
-
             exp = _exp;
         }
 
@@ -893,10 +910,8 @@ namespace compiler
                     Settings.EmitCode(sw, $"ldstr \"{val.ToString()}\"");
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
                 }
-
             }
         }
-
     }
 
     public class IfStatement : Statement
@@ -950,21 +965,26 @@ namespace compiler
 
     public class StatementStatement : Statement
     {
-        public Statement statement;
+       // public Statement statement = null;
         public Expression exp = null;
 
-        public StatementStatement(Statement _statement)
-        {
-            statement = _statement;
-        }
+        //public StatementStatement(Statement _statement)
+        //{
+        //    statement = _statement;
+        //}
         public StatementStatement(Expression _exp)
         {
             _exp.CheckType();
-            var x = _exp.GetValue();
             exp = _exp;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override void GenCode(StreamWriter sw)
+        {
+            if(exp != null)
+            {
+                exp.GenCode(sw);
+            }
+        }
 
     }
 

@@ -6,7 +6,7 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  WG
-//  DateTime: 28.06.2020 00:09:26
+//  DateTime: 28.06.2020 01:58:04
 //  UserName: HP
 //  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 25.06.2020 23:42:01>
 //  GPLEX frame file <embedded resource>
