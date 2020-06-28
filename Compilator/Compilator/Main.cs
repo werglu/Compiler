@@ -2,9 +2,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using GardensPoint;
+using System.Globalization;
 
 namespace compiler
 {
+
     public enum VarType
     {
         Int = 0,
@@ -12,7 +14,6 @@ namespace compiler
         Bool = 2,
         Undefined = 3
     }
-
 
     public class ValueProperties
     {
@@ -28,19 +29,21 @@ namespace compiler
         }
     }
 
-
+    public abstract class Expression
+    {
+        public abstract VarType CheckType();
+        public abstract ValueProperties GetValue();
+        public abstract string GenCode(StreamWriter sw, bool loadString = false);
+    }
 
     public class Compiler
     {
-
-      //  public static int errors = 0;
-
         public static List<string> source;
-
-       // public static Dictionary<string, (VarType, double)> varDictionary; 
 
         public static int Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+
             string file;
             FileStream source;
             Console.WriteLine("\nSingle-Pass CIL Code Generator for Multiline Calculator - Gardens Point");
@@ -71,6 +74,7 @@ namespace compiler
             sw = new StreamWriter(file + ".il");
             GenProlog();
             bool canParse = parser.Parse();
+            if(parser.MyProgram !=  null)
             parser.MyProgram.GenCode(sw);
             //if (!canParse) return 1;
             GenEpilog();
@@ -128,14 +132,10 @@ namespace compiler
             EmitCode("}");
         }
 
-
-
         public void EmitErrorCode(string error)
         {
             Console.WriteLine($"{error}");
         }
-
-
     }
 
     public class Program
@@ -161,9 +161,6 @@ namespace compiler
 
         public void GenCode(StreamWriter sw)
         {
-            Console.WriteLine("program");
-            Console.WriteLine("{");
-
             for (int i=0; i<list.Count;i++)
             {
                 list[i].GenCode(sw);
@@ -172,8 +169,6 @@ namespace compiler
             {
                 statList[i].GenCode(sw);
             }
-            Console.WriteLine("}");
-
         }
     }
 
@@ -181,6 +176,8 @@ namespace compiler
     public static class Settings
     {
         public static int errors = 0;
+        public static int number = 0;
+
         public static Dictionary<string, (VarType, double)> varDictionary = new Dictionary<string, (VarType, double)>();
         public static Scanner scanner;
         public static List<int> linenumbers = new List<int>();
@@ -312,19 +309,11 @@ namespace compiler
         }
     }
 
-    public abstract class Expression
-    {
-        public abstract VarType CheckType();
-        public abstract ValueProperties GetValue();
-        public abstract string GenCode(StreamWriter sw, bool loadString = false);
-    }
-
-
     public class ExpresionOperation : Expression
     {
-        Expression LExp;
-        Expression RExp;
-        string operationType;
+        public Expression LExp;
+        public Expression RExp;
+        public string operationType;
         int lineno;
 
         public ExpresionOperation(Expression _lexp, Expression _rexp, string _operationType, int _lineno)
@@ -548,20 +537,22 @@ namespace compiler
                 s = RExp.GenCode(sw);
                 var Lval = LExp.GetValue();
                 var Rval = RExp.GetValue();
+                Settings.EmitCode(sw, "dup");
                 if (Lval.type == VarType.Bool)
                 {
-                    //int val = Rval.value == 0 ? 0 : 1;
-                    //Settings.EmitCode(sw, $"ldc.i4.{val}");
                     Settings.EmitCode(sw, $"stloc.s B_{Lval.name}");
                 }
                 if (Lval.type == VarType.Double)
                 {
-                    //Settings.EmitCode(sw, $"ldc.r8 {Rval.value}");
+                    if(Rval.type== VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
                     Settings.EmitCode(sw, $"stloc.s D_{Lval.name}");
                 }
                 if (Lval.type == VarType.Int)
                 {
-                    //Settings.EmitCode(sw, $"ldc.i4.s {Rval.value}");
+
                     Settings.EmitCode(sw, $"stloc.s I_{Lval.name}");
                 }
             }
@@ -617,7 +608,134 @@ namespace compiler
                 if (operationType == "Minus")
                     Settings.EmitCode(sw, "sub");
             }
+            if (operationType == "GreatherThan" || operationType == "LessThanOrEqual" || operationType == "LessThan" || operationType == "GreatherThanOrEqual")
+            {
+                bool check = false;
+                var Ltype = LExp.GetValue();
+                var Rtype = RExp.GetValue();
 
+                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                LExp.GenCode(sw);
+                if (check)
+                {
+                    if (Ltype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+                RExp.GenCode(sw);
+                if (check)
+                {
+                    if (Rtype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+
+                if (operationType == "GreatherThan") { Settings.EmitCode(sw, "cgt"); }
+                if (operationType == "LessThanOrEqual")
+                {
+                    Settings.EmitCode(sw, "cgt");
+                    Settings.EmitCode(sw, "ldc.i4.0");
+                    Settings.EmitCode(sw, "ceq");
+                }
+                if (operationType == "LessThan") { Settings.EmitCode(sw, "clt"); }
+                if (operationType == "GreatherThanOrEqual")
+                {
+                    Settings.EmitCode(sw, "clt");
+                    Settings.EmitCode(sw, "ldc.i4.0");
+                    Settings.EmitCode(sw, "ceq");
+                }
+            }
+            if (operationType == "Equal" || operationType == "NotEqual")
+            {
+                bool check = false;
+                var Ltype = LExp.GetValue();
+                var Rtype = RExp.GetValue();
+
+                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                LExp.GenCode(sw);
+                if (check)
+                {
+                    if (Ltype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+                RExp.GenCode(sw);
+                if (check)
+                {
+                    if (Rtype.type == VarType.Int)
+                    {
+                        Settings.EmitCode(sw, "conv.r8");
+                    }
+                }
+                if (operationType == "Equal") { Settings.EmitCode(sw, "ceq"); }
+                if (operationType == "NotEqual")
+                {
+                    Settings.EmitCode(sw, "ceq");
+                    Settings.EmitCode(sw, "ldc.i4.0");
+                    Settings.EmitCode(sw, "ceq");
+                }
+            }
+            if (operationType == "Or")
+            {
+                string et1 = "e" + Settings.number.ToString();
+                Settings.number++;
+                string et2 = "e" + Settings.number.ToString();
+                Settings.number++;
+                string et3 = "e" + Settings.number.ToString();
+                Settings.number++;
+
+                LExp.GenCode(sw);
+                Settings.EmitCode(sw, $"brtrue.s {et1}");
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, $"brtrue.s {et1}");
+                Settings.EmitCode(sw, $"br.s {et2}");
+
+                Settings.EmitCode(sw, $"{et1}: nop ldc.i4.1");
+                Settings.EmitCode(sw, $"br.s {et3}");
+
+                Settings.EmitCode(sw, $"{et2}: nop ldc.i4.0");
+
+                Settings.EmitCode(sw, $"{et3}: nop");
+
+            }
+            if (operationType == "And")
+            {
+                string et1 = "f" + Settings.number.ToString();
+                Settings.number++;
+                string et2 = "f" + Settings.number.ToString();
+                Settings.number++;
+                string et3 = "f" + Settings.number.ToString();
+                Settings.number++;
+
+                LExp.GenCode(sw);
+                Settings.EmitCode(sw, $"brfalse.s {et1}");
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, $"brfalse.s {et1}");
+                Settings.EmitCode(sw, $"br.s {et2}");
+
+                Settings.EmitCode(sw, $"{et1}: nop ldc.i4.0");
+                Settings.EmitCode(sw, $"br.s {et3}");
+
+                Settings.EmitCode(sw, $"{et2}: nop ldc.i4.1");
+
+                Settings.EmitCode(sw, $"{et3}: nop");
+
+            }
+            if (operationType == "LogicalOr")
+            {
+                LExp.GenCode(sw);
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "or");
+            }
+            if (operationType == "LogicalAnd")
+            {
+                LExp.GenCode(sw);
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "and");
+            }
             return s;
         }
 
@@ -838,13 +956,9 @@ namespace compiler
                     return VarType.Bool;
                 }
                 if (LExpCheckType != VarType.Undefined && RExpCheckType != VarType.Undefined)
-
                 {
-                    //if (!Settings.linenumbers.Contains(lineno))
-                    {
-                        Settings.linenumbers.Add(lineno);
-                        Console.WriteLine($"Type mismatch {operationType} - both should be bool! - line: " + lineno.ToString());
-                    }
+                    Settings.linenumbers.Add(lineno);
+                    Console.WriteLine($"Type mismatch {operationType} - both should be bool! - line: " + lineno.ToString());
                     Settings.errors++;
                 }
                 return VarType.Undefined;
@@ -854,7 +968,7 @@ namespace compiler
             {
                 VarType RExpCheckType = RExp.CheckType();
                 VarType LExpCheckType = LExp.CheckType();
-                if (LExpCheckType == VarType.Double && (RExpCheckType == VarType.Double ))
+                if (LExpCheckType == VarType.Double && (RExpCheckType == VarType.Double || RExpCheckType == VarType.Int))
                 {
                     return VarType.Double;
                 }
@@ -890,8 +1004,10 @@ namespace compiler
 
     public class EmptyStatement : Statement
     {
-        public override string GenCode(StreamWriter sw) { return null;  }
-
+        public override string GenCode(StreamWriter sw)
+        {
+            Settings.EmitCode(sw, "nop"); return null;
+        }
     }
 
     public class ReturnStatement : Statement
@@ -920,7 +1036,13 @@ namespace compiler
             stat = _stat;
         }
 
-        public override string GenCode(StreamWriter sw) { return null; }
+        public override string GenCode(StreamWriter sw)
+        {
+
+
+            return null;
+
+        }
 
     }
 
@@ -951,6 +1073,14 @@ namespace compiler
             {
                 var str = exp.GenCode(sw);
                 var value = exp.GetValue();
+                ExpresionOperation ee = exp as ExpresionOperation;
+                if(ee != null)
+                {
+                    if(ee.operationType == "Assign")
+                    {
+                        ee.RExp.GenCode(sw);
+                    }
+                }
                 if (value.type == VarType.Double)
                 {
                     //var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
@@ -993,7 +1123,18 @@ namespace compiler
             stat = _stat;
         }
 
-        public override string GenCode(StreamWriter sw) { return null; }
+        public override string GenCode(StreamWriter sw)
+        {
+            string et1 = "e" + Settings.number.ToString();
+            Settings.number++;
+
+            exp.GenCode(sw);
+            Settings.EmitCode(sw, $"brfalse.s {et1}");
+            stat.GenCode(sw);
+            Settings.EmitCode(sw, $"{et1}: nop");
+
+            return null;
+        }
 
     }
 
@@ -1012,8 +1153,24 @@ namespace compiler
             elseStat = _elsestat;
         }
 
-        public override string GenCode(StreamWriter sw) { return null; }
+        public override string GenCode(StreamWriter sw)
+        {
+            string et1 = "e" + Settings.number.ToString();
+            Settings.number++;
+            string et2 = "e" + Settings.number.ToString();
+            Settings.number++;
 
+            exp.GenCode(sw);
+            Settings.EmitCode(sw, $"brfalse.s {et1}");
+            stat.GenCode(sw);
+            Settings.EmitCode(sw, $"br.s {et2}");
+
+            Settings.EmitCode(sw, $"{et1}: nop");
+            elseStat.GenCode(sw);
+            Settings.EmitCode(sw, $"{et2}: nop");
+
+            return null;
+        }
     }
 
     public class ReadStatement : Statement
@@ -1022,15 +1179,27 @@ namespace compiler
         public ReadStatement(Number _number)
         {
             _number.CheckType();
-
             number = _number;
         }
 
         public override string GenCode(StreamWriter sw)
         {
-
             Settings.EmitCode(sw, "call string [mscorlib]System.Console::ReadLine()");
-
+            if(number.varType == VarType.Double)
+            {
+                Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string)");
+                Settings.EmitCode(sw, $"stloc.s D_{number.name}");
+            }
+            if (number.varType == VarType.Bool)
+            {
+                Settings.EmitCode(sw, " call bool[mscorlib]System.Boolean::Parse(string)");
+                Settings.EmitCode(sw, $"stloc.s B_{number.name}");
+            }
+            if (number.varType == VarType.Int)
+            {
+                Settings.EmitCode(sw, " call int32[mscorlib]System.Int32::Parse(string)");
+                Settings.EmitCode(sw, $"stloc.s I_{number.name}");
+            }
             return null;
         }
 
@@ -1038,13 +1207,8 @@ namespace compiler
 
     public class StatementStatement : Statement
     {
-       // public Statement statement = null;
         public Expression exp = null;
 
-        //public StatementStatement(Statement _statement)
-        //{
-        //    statement = _statement;
-        //}
         public StatementStatement(Expression _exp)
         {
             _exp.CheckType();
@@ -1074,6 +1238,10 @@ namespace compiler
 
         public override string GenCode(StreamWriter sw)
         {
+            for(int i=statement.Count-1; i>=0;i--)
+            {
+                statement[i].GenCode(sw);
+            }
             return null;
         }
 

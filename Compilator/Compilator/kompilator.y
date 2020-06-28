@@ -91,7 +91,7 @@ statement1 : OpenBraces statement CloseBraces { $$ = new ListStatement($2);  }
 		  ;
 
 
-expresion : Ident Assign exp { $$ = new ExpresionOperation(new Number($1, sc.lineno), $3, "Assign", sc.lineno); }
+expresion : Ident Assign expresion { $$ = new ExpresionOperation(new Number($1, sc.lineno), $3, "Assign", sc.lineno); }
 		  | exp { $$ = $1; }
 		  ;
 
