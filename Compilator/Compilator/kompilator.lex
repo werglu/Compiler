@@ -6,9 +6,9 @@
 	public int lineno = 1;
 %}
 
-Ident       [a-zA-Z]+[a-zA-Z0-9]*
 IntNumber   ("0"|([1-9][0-9]*))
 RealNumber  ("0"|([1-9][0-9]*)\.[0-9]+)
+Ident       [a-zA-Z]+[a-zA-Z0-9]*
 String		\"([^\\\"\n]|\\.)*\"
 Comment		\/\/[^\n\r]*
 

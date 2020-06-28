@@ -42,7 +42,7 @@ namespace compiler
 
         public static int Main(string[] args)
         {
-            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+            //CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
 
             string file;
             FileStream source;
@@ -177,7 +177,10 @@ namespace compiler
     {
         public static int errors = 0;
         public static int number = 0;
-
+        public static void IncreaseNumber()
+        {
+            number++;
+        }
         public static Dictionary<string, (VarType, double)> varDictionary = new Dictionary<string, (VarType, double)>();
         public static Scanner scanner;
         public static List<int> linenumbers = new List<int>();
@@ -680,12 +683,12 @@ namespace compiler
             }
             if (operationType == "Or")
             {
-                string et1 = "e" + Settings.number.ToString();
-                Settings.number++;
-                string et2 = "e" + Settings.number.ToString();
-                Settings.number++;
-                string et3 = "e" + Settings.number.ToString();
-                Settings.number++;
+                string et1 = String.Concat("et", Settings.number.ToString());
+                Settings.IncreaseNumber();
+                string et2 = String.Concat("et", Settings.number.ToString());
+                Settings.IncreaseNumber();
+                string et3 = String.Concat("et", Settings.number.ToString());
+                Settings.IncreaseNumber();
 
                 LExp.GenCode(sw);
                 Settings.EmitCode(sw, $"brtrue.s {et1}");
@@ -703,12 +706,13 @@ namespace compiler
             }
             if (operationType == "And")
             {
-                string et1 = "f" + Settings.number.ToString();
-                Settings.number++;
-                string et2 = "f" + Settings.number.ToString();
-                Settings.number++;
-                string et3 = "f" + Settings.number.ToString();
-                Settings.number++;
+                string et1 = String.Concat("ft", Settings.number.ToString());
+                Settings.IncreaseNumber();
+                string et2 = String.Concat("ft", Settings.number.ToString());
+                Settings.IncreaseNumber();
+                string et3 = String.Concat("ft", Settings.number.ToString());
+
+                Settings.IncreaseNumber();
 
                 LExp.GenCode(sw);
                 Settings.EmitCode(sw, $"brfalse.s {et1}");
@@ -1038,7 +1042,30 @@ namespace compiler
 
         public override string GenCode(StreamWriter sw)
         {
+            string et1 = String.Concat("et", Settings.number.ToString());
+            Settings.IncreaseNumber();
+            string et2 = String.Concat("et", Settings.number.ToString());
+            Settings.IncreaseNumber();
+            string et3 = String.Concat("et", Settings.number.ToString());
+            Settings.IncreaseNumber();
 
+            Settings.EmitCode(sw, $"br.s {et1}");
+            Settings.EmitCode(sw, $"{et2}: nop");
+            stat.GenCode(sw);
+
+            Settings.EmitCode(sw, " nop");
+
+            Settings.EmitCode(sw, $"{et1}: nop");
+            exp.GenCode(sw);
+            Settings.EmitCode(sw, $"brtrue.s {et2}");
+         
+
+            //Settings.EmitCode(sw, $"br.s {et3}");
+
+
+
+
+            // Settings.EmitCode(sw, $"{et3}: nop");
 
             return null;
 
@@ -1085,25 +1112,19 @@ namespace compiler
                 {
                     //var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
                     //Settings.EmitCode(sw, $"ldstr \"{culture}\"");
-                 /*   Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
-                    Settings.EmitCode(sw, "ldstr \"{ 0:0.000000}\" ");
+                    Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
+                    Settings.EmitCode(sw, "ldstr \"{0:0.000000}\" ");
                     exp.GenCode(sw);
                     Settings.EmitCode(sw, "box [mscorlib]System.Double");
                     Settings.EmitCode(sw, "call string [mscorlib]System.String::Format(class [mscorlib]System.IFormatProvider,string,object)");
-                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
-                    */
-                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(float64)");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");                    
                 }
                 if (value.type == VarType.Bool)
                 {
-                   // string val = value.value == 0 ? "False" : "True";
-                   // Settings.EmitCode(sw, $"ldstr \"{val}\"");
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(bool)");
                 }
                 if (value.type == VarType.Int)
                 {
-                    //int val = (int)value.value;
-                    //Settings.EmitCode(sw, $"ldstr \"{val.ToString()}\"");
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(int32)");
                 }
             }
@@ -1125,8 +1146,8 @@ namespace compiler
 
         public override string GenCode(StreamWriter sw)
         {
-            string et1 = "e" + Settings.number.ToString();
-            Settings.number++;
+            string et1 = String.Concat("et", Settings.number.ToString());
+            Settings.IncreaseNumber();
 
             exp.GenCode(sw);
             Settings.EmitCode(sw, $"brfalse.s {et1}");
@@ -1155,10 +1176,8 @@ namespace compiler
 
         public override string GenCode(StreamWriter sw)
         {
-            string et1 = "e" + Settings.number.ToString();
-            Settings.number++;
-            string et2 = "e" + Settings.number.ToString();
-            Settings.number++;
+            string et1 = String.Concat("et", Settings.number.ToString()); Settings.IncreaseNumber();
+            string et2 = String.Concat("et", Settings.number.ToString()); Settings.IncreaseNumber();
 
             exp.GenCode(sw);
             Settings.EmitCode(sw, $"brfalse.s {et1}");
@@ -1187,7 +1206,9 @@ namespace compiler
             Settings.EmitCode(sw, "call string [mscorlib]System.Console::ReadLine()");
             if(number.varType == VarType.Double)
             {
-                Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string)");
+                // Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string)");
+                Settings.EmitCode(sw, "call class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Globalization.CultureInfo::get_InvariantCulture()");
+                Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string, class [mscorlib]System.IFormatProvider)");               
                 Settings.EmitCode(sw, $"stloc.s D_{number.name}");
             }
             if (number.varType == VarType.Bool)

@@ -37,13 +37,13 @@ public List<Statement> statementsList;
 start     : line { Console.WriteLine("start");  YYACCEPT; }
           ;
 
-line      : Program OpenBraces end { MyProgram = new Program(new List<Declarations>());  YYACCEPT; }
-          | Program OpenBraces declarations end	{ MyProgram = new Program($3);   YYACCEPT;}
-		  | Program OpenBraces declarations statement end { MyProgram = new Program($3, $4);   YYACCEPT;}
-		  | Program OpenBraces statement end { MyProgram = new Program($3);  YYACCEPT;}
+line      : Program OpenBraces end { MyProgram = new Program(new List<Declarations>()); YYACCEPT; }
+          | Program OpenBraces declarations end	{ MyProgram = new Program($3); YYACCEPT;}
+		  | Program OpenBraces declarations statement end { MyProgram = new Program($3, $4); YYACCEPT;}
+		  | Program OpenBraces statement end { MyProgram = new Program($3); YYACCEPT;}
 		  | error 
 			{ 
-				Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
+				Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 				Settings.errors++;
 				yyerrok(); 
 				YYABORT;
@@ -53,13 +53,13 @@ line      : Program OpenBraces end { MyProgram = new Program(new List<Declaratio
 end   : CloseBraces Eof {   }
       | CloseBraces Error
 	  {
-	  	Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
+	  	Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 		Settings.errors++;
 		yyerrok(); 
 	  }
 	  | Error 
 	  { 
-	  	Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
+	  	Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 		Settings.errors++;
 		yyerrok(); 
 	  }
@@ -69,9 +69,9 @@ declarations  : declaration declarations { $2.Add($1); $$ = $2; }
               | declaration { $$ = new List<Declarations>{$1};  }
 			  ;
 
-declaration : Bool Ident Semicolon { $$ = new Declarations($2, 2,sc.lineno); }	
-			| Int Ident Semicolon { $$ = new Declarations($2, 0,sc.lineno); }
-			| Double Ident Semicolon { $$ = new Declarations($2,1, sc.lineno); }
+declaration : Bool Ident Semicolon { $$ = new Declarations($2, 2, sc.lineno); }	
+			| Int Ident Semicolon { $$ = new Declarations($2, 0, sc.lineno); }
+			| Double Ident Semicolon { $$ = new Declarations($2, 1, sc.lineno); }
 			;
 
 statement : statement1 statement {  $2.Add($1); $$ = $2; }
@@ -143,9 +143,9 @@ simpleoperation  : LogicalNegation { $$ = "LogicalNegation";  }
 				 | Minus { $$ = "UnarMinus"; }
 				 | OpenPar Int ClosePar { $$ = "IntConversion"; }
 				 | OpenPar Double ClosePar { $$ = "DoubleConversion"; }
-				 | error Semicolon
+				 | error
 				 {
-				 		Console.WriteLine("  line {0,3}:  syntax error",sc.lineno);
+				 		Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 						Settings.errors++;
 						yyerrok(); 
 						YYABORT;
