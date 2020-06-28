@@ -279,7 +279,7 @@ namespace compiler
             return new ValueProperties(name, varType, value);
         }
 
-        public override string GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw, bool loadString = false)
         {
             if(varType == VarType.Int && !ident)
             {
@@ -292,16 +292,21 @@ namespace compiler
             }
             else if (varType == VarType.Double && !ident)
             {
-                Settings.EmitCode(sw, $"ldc.r8 {value}");
+                var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value);
+
+                // Settings.EmitCode(sw, $"ldstr \"{culture}\"");
+                Settings.EmitCode(sw, $"ldc.r8 {culture}");
+               // return culture;
+
             }
-            else if(ident)
+            else if (ident)
             {
                 if (varType == VarType.Int)
-                    Settings.EmitCode(sw, $"ldloca I_{name}");
+                    Settings.EmitCode(sw, $"ldloc.s I_{name}");
                 if (varType == VarType.Bool)
-                    Settings.EmitCode(sw, $"ldloca B_{name}");
+                    Settings.EmitCode(sw, $"ldloc.s B_{name}");
                 if (varType == VarType.Double)
-                    Settings.EmitCode(sw, $"ldloca D_{name}");
+                    Settings.EmitCode(sw, $"ldloc.s D_{name}");
             }
             return null;
         }
@@ -311,7 +316,7 @@ namespace compiler
     {
         public abstract VarType CheckType();
         public abstract ValueProperties GetValue();
-        public abstract string GenCode(StreamWriter sw);
+        public abstract string GenCode(StreamWriter sw, bool loadString = false);
     }
 
 
@@ -535,13 +540,14 @@ namespace compiler
         }
 
 
-        public override string GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw, bool loadString = false)
         {
+            string s = "";
             if(operationType == "Assign")
             {
-                RExp.GenCode(sw);
+                s = RExp.GenCode(sw);
                 var Lval = LExp.GetValue();
-                //var Rval = RExp.GetValue();
+                var Rval = RExp.GetValue();
                 if (Lval.type == VarType.Bool)
                 {
                     //int val = Rval.value == 0 ? 0 : 1;
@@ -559,7 +565,28 @@ namespace compiler
                     Settings.EmitCode(sw, $"stloc.s I_{Lval.name}");
                 }
             }
-            return null;
+            if (operationType == "UnarMinus")
+            {
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "neg");
+            }
+            if(operationType== "BitwiseNegation" || operationType == "LogicalNegation")
+            {
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "not");
+            }
+            if (operationType == "IntConversion")
+            {
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "conv.i4");
+            }
+            if (operationType == "DoubleConversion")
+            {
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "conv.r8");
+            }
+
+            return s;
         }
 
         public override VarType CheckType()
@@ -826,21 +853,21 @@ namespace compiler
 
     public abstract class Statement
     {
-        public abstract void GenCode(StreamWriter sw);
+        public abstract string GenCode(StreamWriter sw);
     }
 
     public class EmptyStatement : Statement
     {
-        public override void GenCode(StreamWriter sw) {  }
+        public override string GenCode(StreamWriter sw) { return null;  }
 
     }
 
     public class ReturnStatement : Statement
     {
-        public override void GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw)
         {
             Settings.EmitCode(sw, "leave EndMain");
-              
+            return null;
         }
     }
 
@@ -861,7 +888,7 @@ namespace compiler
             stat = _stat;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override string GenCode(StreamWriter sw) { return null; }
 
     }
 
@@ -881,7 +908,7 @@ namespace compiler
             str = _str;
         }
 
-        public override void GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw)
         {
             if(str != null)
             {
@@ -890,27 +917,35 @@ namespace compiler
             }
             else if(exp != null)
             {
+                var str = exp.GenCode(sw);
                 var value = exp.GetValue();
                 if (value.type == VarType.Double)
                 {
-                    var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
-                    Settings.EmitCode(sw, $"ldstr \"{culture}\"");
+                    //var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
+                    //Settings.EmitCode(sw, $"ldstr \"{culture}\"");
+                 /*   Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
+                    Settings.EmitCode(sw, "ldstr \"{ 0:0.000000}\" ");
+                    exp.GenCode(sw);
+                    Settings.EmitCode(sw, "box [mscorlib]System.Double");
+                    Settings.EmitCode(sw, "call string [mscorlib]System.String::Format(class [mscorlib]System.IFormatProvider,string,object)");
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
-
+                    */
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(float64)");
                 }
                 if (value.type == VarType.Bool)
                 {
-                    string val = value.value == 0 ? "False" : "True";
-                    Settings.EmitCode(sw, $"ldstr \"{val}\"");
-                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+                   // string val = value.value == 0 ? "False" : "True";
+                   // Settings.EmitCode(sw, $"ldstr \"{val}\"");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(bool)");
                 }
                 if (value.type == VarType.Int)
                 {
-                    int val = (int)value.value;
-                    Settings.EmitCode(sw, $"ldstr \"{val.ToString()}\"");
-                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");
+                    //int val = (int)value.value;
+                    //Settings.EmitCode(sw, $"ldstr \"{val.ToString()}\"");
+                    Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(int32)");
                 }
             }
+            return null;
         }
     }
 
@@ -926,7 +961,7 @@ namespace compiler
             stat = _stat;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override string GenCode(StreamWriter sw) { return null; }
 
     }
 
@@ -945,7 +980,7 @@ namespace compiler
             elseStat = _elsestat;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override string GenCode(StreamWriter sw) { return null; }
 
     }
 
@@ -959,7 +994,13 @@ namespace compiler
             number = _number;
         }
 
-        public override void GenCode(StreamWriter sw) { }
+        public override string GenCode(StreamWriter sw)
+        {
+
+            Settings.EmitCode(sw, "call string [mscorlib]System.Console::ReadLine()");
+
+            return null;
+        }
 
     }
 
@@ -978,12 +1019,14 @@ namespace compiler
             exp = _exp;
         }
 
-        public override void GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw)
         {
+            string s = "";
             if(exp != null)
             {
-                exp.GenCode(sw);
+               s = exp.GenCode(sw);
             }
+            return s;
         }
 
     }
@@ -997,9 +1040,9 @@ namespace compiler
             statement = _statement;
         }
 
-        public override void GenCode(StreamWriter sw)
+        public override string GenCode(StreamWriter sw)
         {
-
+            return null;
         }
 
 
