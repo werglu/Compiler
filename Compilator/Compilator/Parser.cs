@@ -4,7 +4,7 @@
 
 // GPPG version 1.5.2
 // Machine:  WG
-// DateTime: 29.06.2020 15:13:43
+// DateTime: 30.06.2020 00:36:56
 // UserName: HP
 // Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:13:58>
 

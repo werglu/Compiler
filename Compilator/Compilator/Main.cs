@@ -394,15 +394,7 @@ namespace compiler
                         return new ValueProperties(null, VarType.Int, lval * rval);
                     if (operationType == "Divides")
                     {
-                       /* if(rval == 0)
-                        {
-                            Console.WriteLine("Divide by 0 is not allowed!");
-                            Settings.errors++;
-                        }*/
-                       // else
-                        {
-                            return new ValueProperties(null, VarType.Int, lval / rval);
-                        }
+                        return new ValueProperties(null, VarType.Int, lval / rval);
                     }
                     if (operationType == "Plus")
                         return new ValueProperties(null, VarType.Int, lval + rval);
@@ -418,15 +410,7 @@ namespace compiler
                         return new ValueProperties(null, VarType.Double, lval * rval);
                     if (operationType == "Divides")
                     {
-                       /* if (rval == 0)
-                        {
-                            Console.WriteLine("Divide by 0 is not allowed!");
-                            Settings.errors++;
-                        }*/
-                        //else
-                        {
-                            return new ValueProperties(null, VarType.Double, lval / rval);
-                        }
+                        return new ValueProperties(null, VarType.Double, lval / rval);
                     }
                     if (operationType == "Plus")
                         return new ValueProperties(null, VarType.Double, lval + rval);
@@ -509,6 +493,7 @@ namespace compiler
 
             if (operationType == "Assign")
             {
+
                 ValueProperties Lvp = LExp.GetValue();
                 ValueProperties Rvp = RExp.GetValue();
                 if ((Lvp.type == VarType.Double && (Rvp.type == VarType.Double || Rvp.type == VarType.Int)) || (Lvp.type == VarType.Int && Rvp.type == VarType.Int) || (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool))
@@ -534,12 +519,14 @@ namespace compiler
             string s = "";
             if(operationType == "Assign")
             {
-                s = RExp.GenCode(sw);
+                RExp.GenCode(sw);
                 var Lval = LExp.GetValue();
                 var Rval = RExp.GetValue();
-                Settings.EmitCode(sw, "dup");
+                
                 if (Lval.type == VarType.Bool)
                 {
+                    Settings.EmitCode(sw, "dup");
+
                     Settings.EmitCode(sw, $"stloc B_{Lval.name}");
                 }
                 if (Lval.type == VarType.Double)
@@ -548,13 +535,18 @@ namespace compiler
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
+                    Settings.EmitCode(sw, "dup");
+
                     Settings.EmitCode(sw, $"stloc D_{Lval.name}");
                 }
                 if (Lval.type == VarType.Int)
                 {
+                    Settings.EmitCode(sw, "dup");
 
                     Settings.EmitCode(sw, $"stloc I_{Lval.name}");
                 }
+              //  Settings.EmitCode(sw, "pop");
+
             }
             if (operationType == "UnarMinus")
             {
@@ -1067,19 +1059,9 @@ namespace compiler
             Settings.EmitCode(sw, $"{et1}:");
             exp.GenCode(sw);
             Settings.EmitCode(sw, $"brtrue {et2}");
-            
-
-            //Settings.EmitCode(sw, $"br.s {et3}");
-
-
- 
-        
-            // Settings.EmitCode(sw, $"{et3}: nop");
 
             return null;
-
         }
-
     }
 
     public class WriteStatement : Statement
@@ -1109,16 +1091,16 @@ namespace compiler
             }
             else if(exp != null)
             {
-                var str = exp.GenCode(sw);
+                //var str = exp.GenCode(sw);
                 var value = exp.GetValue();
                 ExpresionOperation ee = exp as ExpresionOperation;
-                if(ee != null)
-                {
-                    if(ee.operationType == "Assign")
-                    {
-                        ee.RExp.GenCode(sw);
-                    }
-                }
+                //if(ee != null)
+                //{
+                //    if(ee.operationType == "Assign")
+                //    {
+                //        ee.RExp.GenCode(sw);
+                //    }
+                //}
                 if (value.type == VarType.Double)
                 {
                     Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
@@ -1130,10 +1112,12 @@ namespace compiler
                 }
                 if (value.type == VarType.Bool)
                 {
+                    exp.GenCode(sw);
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(bool)");
                 }
                 if (value.type == VarType.Int)
                 {
+                    exp.GenCode(sw);
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(int32)");
                 }
             }
@@ -1166,7 +1150,6 @@ namespace compiler
 
             return null;
         }
-
     }
 
     public class IfElseStatement : Statement
@@ -1253,13 +1236,12 @@ namespace compiler
             string s = "";
             if(exp != null)
             {
-               s = exp.GenCode(sw);
+                s = exp.GenCode(sw);
+
                 Settings.EmitCode(sw, "pop");
-                    
             }
             return s;
         }
-
     }
 
     public class ListStatement : Statement
@@ -1279,7 +1261,5 @@ namespace compiler
             }
             return null;
         }
-
-
     }
 }
