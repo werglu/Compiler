@@ -42,8 +42,6 @@ namespace compiler
 
         public static int Main(string[] args)
         {
-            //CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
-
             string file;
             FileStream source;
             Console.WriteLine("\nSingle-Pass CIL Code Generator for Multiline Calculator - Gardens Point");
@@ -293,11 +291,7 @@ namespace compiler
             else if (varType == VarType.Double && !ident)
             {
                 var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value);
-
-                // Settings.EmitCode(sw, $"ldstr \"{culture}\"");
                 Settings.EmitCode(sw, $"ldc.r8 {culture}");
-               // return culture;
-
             }
             else if (ident)
             {
@@ -1025,8 +1019,8 @@ namespace compiler
 
     public class WhileStatement : Statement
     {
-        public Expression exp;
-        public Statement stat;
+        public Expression exp = null;
+        public Statement stat = null;
 
         public WhileStatement(Expression _exp, Statement _stat)
         {
@@ -1049,22 +1043,19 @@ namespace compiler
             string et3 = String.Concat("et", Settings.number.ToString());
             Settings.IncreaseNumber();
 
-            Settings.EmitCode(sw, $"br.s {et1}");
-            Settings.EmitCode(sw, $"{et2}: nop");
+            Settings.EmitCode(sw, $"br {et1}");
+            Settings.EmitCode(sw, $"{et2}:" );
             stat.GenCode(sw);
-
-            Settings.EmitCode(sw, " nop");
-
-            Settings.EmitCode(sw, $"{et1}: nop");
+            Settings.EmitCode(sw, $"{et1}:");
             exp.GenCode(sw);
-            Settings.EmitCode(sw, $"brtrue.s {et2}");
-         
+            Settings.EmitCode(sw, $"brtrue {et2}");
+            
 
             //Settings.EmitCode(sw, $"br.s {et3}");
 
 
-
-
+ 
+        
             // Settings.EmitCode(sw, $"{et3}: nop");
 
             return null;
@@ -1110,8 +1101,6 @@ namespace compiler
                 }
                 if (value.type == VarType.Double)
                 {
-                    //var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value.value);
-                    //Settings.EmitCode(sw, $"ldstr \"{culture}\"");
                     Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
                     Settings.EmitCode(sw, "ldstr \"{0:0.000000}\" ");
                     exp.GenCode(sw);
@@ -1242,6 +1231,8 @@ namespace compiler
             if(exp != null)
             {
                s = exp.GenCode(sw);
+                Settings.EmitCode(sw, "pop");
+                    
             }
             return s;
         }
