@@ -394,7 +394,7 @@ namespace compiler
                         return new ValueProperties(null, VarType.Int, lval * rval);
                     if (operationType == "Divides")
                     {
-                        return new ValueProperties(null, VarType.Int, lval / rval);
+//                        return new ValueProperties(null, VarType.Int, lval / rval);
                     }
                     if (operationType == "Plus")
                         return new ValueProperties(null, VarType.Int, lval + rval);
@@ -410,7 +410,7 @@ namespace compiler
                         return new ValueProperties(null, VarType.Double, lval * rval);
                     if (operationType == "Divides")
                     {
-                        return new ValueProperties(null, VarType.Double, lval / rval);
+            //            return new ValueProperties(null, VarType.Double, lval / rval);
                     }
                     if (operationType == "Plus")
                         return new ValueProperties(null, VarType.Double, lval + rval);
