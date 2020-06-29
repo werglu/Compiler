@@ -394,12 +394,12 @@ namespace compiler
                         return new ValueProperties(null, VarType.Int, lval * rval);
                     if (operationType == "Divides")
                     {
-                        if(rval == 0)
+                       /* if(rval == 0)
                         {
                             Console.WriteLine("Divide by 0 is not allowed!");
                             Settings.errors++;
-                        }
-                        else
+                        }*/
+                       // else
                         {
                             return new ValueProperties(null, VarType.Int, lval / rval);
                         }
@@ -418,12 +418,12 @@ namespace compiler
                         return new ValueProperties(null, VarType.Double, lval * rval);
                     if (operationType == "Divides")
                     {
-                        if (rval == 0)
+                       /* if (rval == 0)
                         {
                             Console.WriteLine("Divide by 0 is not allowed!");
                             Settings.errors++;
-                        }
-                        else
+                        }*/
+                        //else
                         {
                             return new ValueProperties(null, VarType.Double, lval / rval);
                         }
