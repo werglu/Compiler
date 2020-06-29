@@ -4,9 +4,9 @@
 
 // GPPG version 1.5.2
 // Machine:  WG
-// DateTime: 29.06.2020 11:03:16
+// DateTime: 29.06.2020 15:01:20
 // UserName: HP
-// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:03:12>
+// Input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:13:58>
 
 // options: lines gplex
 
@@ -65,11 +65,11 @@ public class ScanObj {
 [GeneratedCodeAttribute( "Gardens Point Parser Generator", "1.5.2")]
 public class Parser: ShiftReduceParser<ValueType, LexLocation>
 {
-  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:03:12
+  // Verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:13:58
 #line 7 "E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y"
 	public Program MyProgram {get; set;}	
 #line default
-  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:03:12
+  // End verbatim content from E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.y - 29.06.2020 11:13:58
 
 #pragma warning disable 649
   private static Dictionary<int, string> aliases;

@@ -107,6 +107,7 @@ namespace compiler
             EmitCode(".method static void main()");
             EmitCode("{");
             EmitCode(".entrypoint");
+            EmitCode(".maxstack  128");
             EmitCode(".try");
             EmitCode("{");
             EmitCode();
@@ -281,7 +282,7 @@ namespace compiler
         {
             if(varType == VarType.Int && !ident)
             {
-                Settings.EmitCode(sw, $"ldc.i4.s {(int)value}");
+                Settings.EmitCode(sw, $"ldc.i4 {(int)value}");
             }
             else if (varType == VarType.Bool && !ident)
             {
@@ -296,11 +297,11 @@ namespace compiler
             else if (ident)
             {
                 if (varType == VarType.Int)
-                    Settings.EmitCode(sw, $"ldloc.s I_{name}");
+                    Settings.EmitCode(sw, $"ldloc I_{name}");
                 if (varType == VarType.Bool)
-                    Settings.EmitCode(sw, $"ldloc.s B_{name}");
+                    Settings.EmitCode(sw, $"ldloc B_{name}");
                 if (varType == VarType.Double)
-                    Settings.EmitCode(sw, $"ldloc.s D_{name}");
+                    Settings.EmitCode(sw, $"ldloc D_{name}");
             }
             return null;
         }
@@ -317,6 +318,8 @@ namespace compiler
         {
             LExp = _lexp;
             RExp = _rexp;
+            if (LExp != null) LExp.GetValue();
+            RExp.GetValue();
             operationType = _operationType;
             lineno = _lineno;
         }
@@ -537,7 +540,7 @@ namespace compiler
                 Settings.EmitCode(sw, "dup");
                 if (Lval.type == VarType.Bool)
                 {
-                    Settings.EmitCode(sw, $"stloc.s B_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc B_{Lval.name}");
                 }
                 if (Lval.type == VarType.Double)
                 {
@@ -545,23 +548,34 @@ namespace compiler
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
-                    Settings.EmitCode(sw, $"stloc.s D_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc D_{Lval.name}");
                 }
                 if (Lval.type == VarType.Int)
                 {
 
-                    Settings.EmitCode(sw, $"stloc.s I_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc I_{Lval.name}");
                 }
             }
             if (operationType == "UnarMinus")
             {
                 RExp.GenCode(sw);
                 Settings.EmitCode(sw, "neg");
+                //Settings.EmitCode(sw, "dup");
+               // Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(bool)");
+
+                
             }
-            if(operationType== "BitwiseNegation" || operationType == "LogicalNegation")
+            if(operationType== "BitwiseNegation")
             {
                 RExp.GenCode(sw);
                 Settings.EmitCode(sw, "not");
+            }
+            if ( operationType == "LogicalNegation")
+            {
+                RExp.GenCode(sw);
+                Settings.EmitCode(sw, "ldc.i4.0");
+                Settings.EmitCode(sw, "ceq");
+
             }
             if (operationType == "IntConversion")
             {
@@ -685,13 +699,13 @@ namespace compiler
                 Settings.IncreaseNumber();
 
                 LExp.GenCode(sw);
-                Settings.EmitCode(sw, $"brtrue.s {et1}");
+                Settings.EmitCode(sw, $"brtrue {et1}");
                 RExp.GenCode(sw);
-                Settings.EmitCode(sw, $"brtrue.s {et1}");
-                Settings.EmitCode(sw, $"br.s {et2}");
+                Settings.EmitCode(sw, $"brtrue {et1}");
+                Settings.EmitCode(sw, $"br {et2}");
 
                 Settings.EmitCode(sw, $"{et1}: nop ldc.i4.1");
-                Settings.EmitCode(sw, $"br.s {et3}");
+                Settings.EmitCode(sw, $"br {et3}");
 
                 Settings.EmitCode(sw, $"{et2}: nop ldc.i4.0");
 
@@ -709,13 +723,13 @@ namespace compiler
                 Settings.IncreaseNumber();
 
                 LExp.GenCode(sw);
-                Settings.EmitCode(sw, $"brfalse.s {et1}");
+                Settings.EmitCode(sw, $"brfalse {et1}");
                 RExp.GenCode(sw);
-                Settings.EmitCode(sw, $"brfalse.s {et1}");
-                Settings.EmitCode(sw, $"br.s {et2}");
+                Settings.EmitCode(sw, $"brfalse {et1}");
+                Settings.EmitCode(sw, $"br {et2}");
 
                 Settings.EmitCode(sw, $"{et1}: nop ldc.i4.0");
-                Settings.EmitCode(sw, $"br.s {et3}");
+                Settings.EmitCode(sw, $"br {et3}");
 
                 Settings.EmitCode(sw, $"{et2}: nop ldc.i4.1");
 
@@ -1029,8 +1043,12 @@ namespace compiler
                 Console.WriteLine($"Type mismatch - expression in while should be bool type!");
                 Settings.errors++;
             }
-
             exp = _exp;
+
+            if (exp != null)
+            {
+                exp.GetValue();
+            }
             stat = _stat;
         }
 
@@ -1073,6 +1091,8 @@ namespace compiler
         {
             _exp.CheckType();
             exp = _exp;
+
+            exp.GetValue();
         }
 
         public WriteStatement(string _str)
@@ -1128,8 +1148,9 @@ namespace compiler
         public IfStatement(Expression _exp, Statement _stat)
         {
             _exp.CheckType();
-
             exp = _exp;
+            exp.GetValue();
+ 
             stat = _stat;
         }
 
@@ -1139,7 +1160,7 @@ namespace compiler
             Settings.IncreaseNumber();
 
             exp.GenCode(sw);
-            Settings.EmitCode(sw, $"brfalse.s {et1}");
+            Settings.EmitCode(sw, $"brfalse {et1}");
             stat.GenCode(sw);
             Settings.EmitCode(sw, $"{et1}: nop");
 
@@ -1157,8 +1178,9 @@ namespace compiler
         public IfElseStatement(Expression _exp, Statement _stat, Statement _elsestat)
         {
             _exp.CheckType();
-
             exp = _exp;
+            exp.GetValue();
+
             stat = _stat;
             elseStat = _elsestat;
         }
@@ -1169,9 +1191,9 @@ namespace compiler
             string et2 = String.Concat("et", Settings.number.ToString()); Settings.IncreaseNumber();
 
             exp.GenCode(sw);
-            Settings.EmitCode(sw, $"brfalse.s {et1}");
+            Settings.EmitCode(sw, $"brfalse {et1}");
             stat.GenCode(sw);
-            Settings.EmitCode(sw, $"br.s {et2}");
+            Settings.EmitCode(sw, $"br {et2}");
 
             Settings.EmitCode(sw, $"{et1}: nop");
             elseStat.GenCode(sw);
@@ -1198,17 +1220,17 @@ namespace compiler
                 // Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string)");
                 Settings.EmitCode(sw, "call class [mscorlib]System.Globalization.CultureInfo [mscorlib]System.Globalization.CultureInfo::get_InvariantCulture()");
                 Settings.EmitCode(sw, " call float64[mscorlib]System.Double::Parse(string, class [mscorlib]System.IFormatProvider)");               
-                Settings.EmitCode(sw, $"stloc.s D_{number.name}");
+                Settings.EmitCode(sw, $"stloc D_{number.name}");
             }
             if (number.varType == VarType.Bool)
             {
                 Settings.EmitCode(sw, " call bool[mscorlib]System.Boolean::Parse(string)");
-                Settings.EmitCode(sw, $"stloc.s B_{number.name}");
+                Settings.EmitCode(sw, $"stloc B_{number.name}");
             }
             if (number.varType == VarType.Int)
             {
                 Settings.EmitCode(sw, " call int32[mscorlib]System.Int32::Parse(string)");
-                Settings.EmitCode(sw, $"stloc.s I_{number.name}");
+                Settings.EmitCode(sw, $"stloc I_{number.name}");
             }
             return null;
         }
@@ -1223,6 +1245,7 @@ namespace compiler
         {
             _exp.CheckType();
             exp = _exp;
+            exp.GetValue();
         }
 
         public override string GenCode(StreamWriter sw)
