@@ -126,7 +126,7 @@ bitwiseoperation : bitwiseoperation LogicalOr operation { $$ = new ExpresionOper
                  ;
 
 
-operation  : OpenPar exp ClosePar {  $$ = $2; }
+operation  : OpenPar expresion ClosePar {  $$ = $2; }
 		   | simpleoperation operation {  $$ = new ExpresionOperation(null, $2, $1, sc.lineno); }
            | number { $$ = $1; }
 		   ;

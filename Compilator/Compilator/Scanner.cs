@@ -6,9 +6,9 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  WG
-//  DateTime: 29.06.2020 10:13:15
+//  DateTime: 29.06.2020 11:03:16
 //  UserName: HP
-//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 28.06.2020 23:00:29>
+//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 29.06.2020 10:44:20>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: verbose, parser, minimize
@@ -192,7 +192,8 @@ public int lineno = 1;
 /* NxS[  13] */ new Table(0, 0, -1, null), // Shortest string "-"
 /* NxS[  14] */ // Shortest string "/"
       new Table(47, 1, -1, new sbyte[] {82}),
-/* NxS[  15] */ new Table(0, 0, -1, null), // Shortest string "0"
+/* NxS[  15] */ // Shortest string "0"
+      new Table(46, 1, -1, new sbyte[] {87}),
 /* NxS[  16] */ // Shortest string "1"
       new Table(46, 12, -1, new sbyte[] {87, -1, 16, 16, 16, 16, 
           16, 16, 16, 16, 16, 16}),
@@ -576,7 +577,7 @@ public int lineno = 1;
 /* NxS[  78] */ new Table(0, 0, -1, null), // Shortest string ">="
 /* NxS[  79] */ new Table(0, 0, -1, null), // Shortest string "=="
 /* NxS[  80] */ new Table(0, 0, -1, null), // Shortest string "<="
-/* NxS[  81] */ // Shortest string "1.0"
+/* NxS[  81] */ // Shortest string "0.0"
       new Table(48, 10, -1, new sbyte[] {81, 81, 81, 81, 81, 81, 
           81, 81, 81, 81}),
 /* NxS[  82] */ // Shortest string "//"
@@ -593,7 +594,7 @@ public int lineno = 1;
           21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 1, 1, 1, 
           1, 1, 21, 22, 21, 23, 24, 25, 21, 21, 26, 21, 21, 21, 21, 21, 
           21, 27, 21, 28, 21, 29, 21, 21, 30, 21, 21, 21, 31, 32, 33, 34}),
-/* NxS[  87] */ // Shortest string "1."
+/* NxS[  87] */ // Shortest string "0."
       new Table(48, 10, -1, new sbyte[] {81, 81, 81, 81, 81, 81, 
           81, 81, 81, 81}),
 /* NxS[  88] */ // Shortest string "\"\x01"
@@ -1195,7 +1196,7 @@ return (int)Tokens.Equal;
         case 80: // Recognized '"<="',	Shortest string "<="
 return (int)Tokens.LessThanOrEqual;
             break;
-        case 81: // Recognized '{RealNumber}',	Shortest string "1.0"
+        case 81: // Recognized '{RealNumber}',	Shortest string "0.0"
 yylval.val=yytext; return (int)Tokens.RealNumber;
             break;
         case 82: // Recognized '{Comment}',	Shortest string "//"
