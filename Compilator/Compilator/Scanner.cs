@@ -6,9 +6,9 @@
 //
 //  GPLEX Version:  1.2.2
 //  Machine:  WG
-//  DateTime: 30.06.2020 16:51:11
+//  DateTime: 30.06.2020 16:57:21
 //  UserName: HP
-//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 30.06.2020 16:48:43>
+//  GPLEX input file <E:\MetodyTranslacji\github\Compilator\Compilator\kompilator.lex - 30.06.2020 16:56:18>
 //  GPLEX frame file <embedded resource>
 //
 //  Option settings: verbose, parser, minimize
@@ -1049,7 +1049,7 @@ return (int)Tokens.Error;
 lineno++;
             break;
         case 4: // Recognized '"\r"',	Shortest string "\r"
-{  }
+{ }
             break;
         case 5: // Recognized '" "',	Shortest string "\x20"
 { }

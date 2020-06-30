@@ -55,7 +55,7 @@ String		\"([^\\\"\n]|\\.)*\"
 ";"           { return (int)Tokens.Semicolon; }
 " "           { }
 "\t"          { }
-"\r"          {  }
+"\r"          { }
 "\n"          { lineno++; }
 <<EOF>>       { return (int)Tokens.Eof; }
 .             { return (int)Tokens.Error; }

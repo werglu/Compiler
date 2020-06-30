@@ -78,7 +78,6 @@ namespace compiler
             bool canParse = parser.Parse();
             if(parser.MyProgram !=  null)
             parser.MyProgram.GenCode(sw);
-            //if (!canParse) return 1;
             GenEpilog();
             sw.Close();
             source.Close();
