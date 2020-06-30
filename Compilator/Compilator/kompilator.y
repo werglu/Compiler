@@ -34,7 +34,7 @@ public List<Statement> statementsList;
 
 %%
 
-start     : line { Console.WriteLine("start");  YYACCEPT; }
+start     : line { YYACCEPT; }
           ;
 
 line      : Program OpenBraces end { MyProgram = new Program(new List<Declarations>()); YYACCEPT; }
@@ -46,11 +46,10 @@ line      : Program OpenBraces end { MyProgram = new Program(new List<Declaratio
 				Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 				Settings.errors++;
 				yyerrok(); 
-				YYABORT;
 			}
           ;
 
-end   : CloseBraces Eof {   }
+end   : CloseBraces Eof { }
       | CloseBraces Error
 	  {
 	  	Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
@@ -62,6 +61,13 @@ end   : CloseBraces Eof {   }
 	  	Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
 		Settings.errors++;
 		yyerrok(); 
+	  }	  
+	  | Eof
+	  { 
+        Console.WriteLine("  line {0,3}:  syntax error - unexpected symbol Eof",sc.lineno);
+		Settings.errors++;
+		yyerrok(); 
+	    YYABORT;
 	  }
 	  ;
 
@@ -143,16 +149,7 @@ simpleoperation  : LogicalNegation { $$ = "LogicalNegation";  }
 				 | Minus { $$ = "UnarMinus"; }
 				 | OpenPar Int ClosePar { $$ = "IntConversion"; }
 				 | OpenPar Double ClosePar { $$ = "DoubleConversion"; }
-				 | error
-				 {
-				 		Console.WriteLine("  line {0,3}:  syntax error", sc.lineno);
-						Settings.errors++;
-						yyerrok(); 
-						YYABORT;
-				 }
 		         ;
-
-err    : EOF { YYABORT; };
 
 %%
 
