@@ -34,7 +34,6 @@ namespace compiler
         public abstract string GenCode(StreamWriter sw, bool loadString = false);
     }
 
-
     public abstract class Statement
     {
         public abstract string GenCode(StreamWriter sw);

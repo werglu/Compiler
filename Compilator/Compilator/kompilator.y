@@ -47,6 +47,13 @@ line      : Program OpenBraces end { MyProgram = new Program(new List<Declaratio
 				Settings.errors++;
 				yyerrok(); 
 			}
+		  | Eof
+		  { 
+			Console.WriteLine("  line {0,3}:  syntax error - unexpected symbol Eof",sc.lineno);
+			Settings.errors++;
+			yyerrok(); 
+			YYABORT;
+		  }
           ;
 
 end   : CloseBraces Eof { }
