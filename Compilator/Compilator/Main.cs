@@ -21,7 +21,7 @@ namespace compiler
         public VarType type;
         public double value;
 
-        public ValueProperties(string _name, VarType _type,double _value)
+        public ValueProperties(string _name, VarType _type, double _value)
         {
             name = _name;
             type = _type;
@@ -32,7 +32,6 @@ namespace compiler
     public abstract class Expression
     {
         public abstract VarType CheckType();
-        public abstract ValueProperties GetValue();
         public abstract string GenCode(StreamWriter sw, bool loadString = false);
     }
 
@@ -180,7 +179,7 @@ namespace compiler
         {
             number++;
         }
-        public static Dictionary<string, (VarType, double)> varDictionary = new Dictionary<string, (VarType, double)>();
+        public static Dictionary<string, Tuple<VarType, double>> varDictionary = new Dictionary<string, Tuple<VarType, double>>();
         public static Scanner scanner;
         public static List<int> linenumbers = new List<int>();
 
@@ -220,7 +219,7 @@ namespace compiler
             if (_varType == 0)
                 varType = VarType.Int;
 
-            Settings.varDictionary.Add(name, (varType, value));
+            Settings.varDictionary.Add(name, new Tuple<VarType, double>(varType, value));
         }
 
         public void GenCode(StreamWriter sw)
@@ -273,10 +272,10 @@ namespace compiler
             return varType;
         }
 
-        public override ValueProperties GetValue()
-        {
-            return new ValueProperties(name, varType, value);
-        }
+        //public override ValueProperties GetValue()
+        //{
+        //    return new ValueProperties(name, varType, value);
+        //}
 
         public override string GenCode(StreamWriter sw, bool loadString = false)
         {
@@ -291,7 +290,7 @@ namespace compiler
             }
             else if (varType == VarType.Double && !ident)
             {
-                var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000}", value);
+                var culture = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.000000000000000}", value);
                 Settings.EmitCode(sw, $"ldc.r8 {culture}");
             }
             else if (ident)
@@ -318,200 +317,200 @@ namespace compiler
         {
             LExp = _lexp;
             RExp = _rexp;
-            if (LExp != null) LExp.GetValue();
-            RExp.GetValue();
+           // if (LExp != null) LExp.GetValue();
+          //  RExp.GetValue();
             operationType = _operationType;
             lineno = _lineno;
         }
 
-        public override ValueProperties GetValue()
-        {
-            if (operationType == "UnarMinus")
-            {
-                ValueProperties vp = RExp.GetValue();
-                return new ValueProperties(vp.name, vp.type, -vp.value);
-            }
-            if(operationType == "BitwiseNegation")
-            {
-                ValueProperties vp = RExp.GetValue();
-                int val = ~((int)vp.value);
-                return new ValueProperties(vp.name, vp.type, val);
+//        public override ValueProperties GetValue()
+//        {
+//            if (operationType == "UnarMinus")
+//            {
+//                ValueProperties vp = RExp.GetValue();
+//                return new ValueProperties(vp.name, vp.type, -vp.value);
+//            }
+//            if(operationType == "BitwiseNegation")
+//            {
+//                ValueProperties vp = RExp.GetValue();
+//                int val = ~((int)vp.value);
+//                return new ValueProperties(vp.name, vp.type, val);
 
-            }
-            if (operationType == "LogicalNegation")
-            {
-                ValueProperties vp = RExp.GetValue();
-                bool val = !(vp.value == 0 ? false : true);
-                return new ValueProperties(vp.name, VarType.Bool, val == false ? 0 : 1);
+//            }
+//            if (operationType == "LogicalNegation")
+//            {
+//                ValueProperties vp = RExp.GetValue();
+//                bool val = !(vp.value == 0 ? false : true);
+//                return new ValueProperties(vp.name, VarType.Bool, val == false ? 0 : 1);
 
-            }
-            if (operationType == "IntConversion")
-            {
-                ValueProperties vp = RExp.GetValue();
-                double val = Math.Truncate(vp.value);
-                return new ValueProperties(vp.name, VarType.Int, val);
-            }
-            if (operationType == "DoubleConversion")
-            {
-                ValueProperties vp = RExp.GetValue();
-                double val = Math.Truncate(vp.value);
-                return new ValueProperties(vp.name, VarType.Double, val);
-            }
-            if (operationType == "LogicalOr" )
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if(Lvp.type == VarType.Int && Rvp.type == VarType.Int)
-                {
-                    int lval = (int) Lvp.value;
-                    int rval = (int)Rvp.value;
+//            }
+//            if (operationType == "IntConversion")
+//            {
+//                ValueProperties vp = RExp.GetValue();
+//                double val = Math.Truncate(vp.value);
+//                return new ValueProperties(vp.name, VarType.Int, val);
+//            }
+//            if (operationType == "DoubleConversion")
+//            {
+//                ValueProperties vp = RExp.GetValue();
+//                double val = Math.Truncate(vp.value);
+//                return new ValueProperties(vp.name, VarType.Double, val);
+//            }
+//            if (operationType == "LogicalOr" )
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if(Lvp.type == VarType.Int && Rvp.type == VarType.Int)
+//                {
+//                    int lval = (int) Lvp.value;
+//                    int rval = (int)Rvp.value;
 
-                    return new ValueProperties(null, VarType.Int, lval | rval);
-                }
-            }
-            if (operationType == "LogicalAnd")
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if (Lvp.type == VarType.Int && Rvp.type == VarType.Int)
-                {
-                    int lval = (int)Lvp.value;
-                    int rval = (int)Rvp.value;
+//                    return new ValueProperties(null, VarType.Int, lval | rval);
+//                }
+//            }
+//            if (operationType == "LogicalAnd")
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if (Lvp.type == VarType.Int && Rvp.type == VarType.Int)
+//                {
+//                    int lval = (int)Lvp.value;
+//                    int rval = (int)Rvp.value;
 
-                    return new ValueProperties(null, VarType.Int, lval & rval);
-                }
-            }
-            if (operationType == "Multiplies" || operationType == "Divides" || operationType == "Plus" || operationType == "Minus")
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
+//                    return new ValueProperties(null, VarType.Int, lval & rval);
+//                }
+//            }
+//            if (operationType == "Multiplies" || operationType == "Divides" || operationType == "Plus" || operationType == "Minus")
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
 
-                if (Lvp.type == VarType.Int && Rvp.type == VarType.Int)
-                {
-                    int lval = (int)Lvp.value;
-                    int rval = (int)Rvp.value;
-                    if(operationType == "Multiplies")
-                        return new ValueProperties(null, VarType.Int, lval * rval);
-                    if (operationType == "Divides")
-                    {
-//                        return new ValueProperties(null, VarType.Int, lval / rval);
-                    }
-                    if (operationType == "Plus")
-                        return new ValueProperties(null, VarType.Int, lval + rval);
-                    if (operationType == "Minus")
-                        return new ValueProperties(null, VarType.Int, lval - rval);
+//                if (Lvp.type == VarType.Int && Rvp.type == VarType.Int)
+//                {
+//                    int lval = (int)Lvp.value;
+//                    int rval = (int)Rvp.value;
+//                    if(operationType == "Multiplies")
+//                        return new ValueProperties(null, VarType.Int, lval * rval);
+//                    if (operationType == "Divides")
+//                    {
+////                        return new ValueProperties(null, VarType.Int, lval / rval);
+//                    }
+//                    if (operationType == "Plus")
+//                        return new ValueProperties(null, VarType.Int, lval + rval);
+//                    if (operationType == "Minus")
+//                        return new ValueProperties(null, VarType.Int, lval - rval);
 
-                }
-                else if ((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int))
-                {
-                    double lval = Lvp.value;
-                    double rval = Rvp.value;
-                    if (operationType == "Multiplies")
-                        return new ValueProperties(null, VarType.Double, lval * rval);
-                    if (operationType == "Divides")
-                    {
-            //            return new ValueProperties(null, VarType.Double, lval / rval);
-                    }
-                    if (operationType == "Plus")
-                        return new ValueProperties(null, VarType.Double, lval + rval);
-                    if (operationType == "Minus")
-                        return new ValueProperties(null, VarType.Double, lval - rval);
-                }
-            }
-            if (operationType == "GreatherThan" || operationType == "LessThanOrEqual" || operationType == "LessThan" || operationType == "GreatherThanOrEqual")
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if ((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int))
-                {
-                    var lval = Lvp.value;
-                    var rval = Rvp.value;
+//                }
+//                else if ((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int))
+//                {
+//                    double lval = Lvp.value;
+//                    double rval = Rvp.value;
+//                    if (operationType == "Multiplies")
+//                        return new ValueProperties(null, VarType.Double, lval * rval);
+//                    if (operationType == "Divides")
+//                    {
+//            //            return new ValueProperties(null, VarType.Double, lval / rval);
+//                    }
+//                    if (operationType == "Plus")
+//                        return new ValueProperties(null, VarType.Double, lval + rval);
+//                    if (operationType == "Minus")
+//                        return new ValueProperties(null, VarType.Double, lval - rval);
+//                }
+//            }
+//            if (operationType == "GreatherThan" || operationType == "LessThanOrEqual" || operationType == "LessThan" || operationType == "GreatherThanOrEqual")
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if ((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int))
+//                {
+//                    var lval = Lvp.value;
+//                    var rval = Rvp.value;
 
-                    if (operationType == "GreatherThan")
-                    {
-                        double val = lval > rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                    if (operationType == "LessThanOrEqual")
-                    {
-                        double val = lval <= rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                    if (operationType == "LessThan")
-                    {
-                        double val = lval < rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                    if (operationType == "GreatherThanOrEqual")
-                    {
-                        double val = lval >= rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                }
-            }
-            if (operationType == "Equal" || operationType == "NotEqual")
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if (((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int)) || (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool))
-                {
-                    var lval = Lvp.value;
-                    var rval = Rvp.value;
-                    if (operationType == "Equal")
-                    {
-                        double val = lval == rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                    if (operationType == "NotEqual")
-                    {
-                        double val = lval != rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                }
-            }
-            if (operationType == "Or" || operationType == "And")
-            {
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool)
-                {
-                    bool lval = Lvp.value == 0? false : true ;
-                    bool rval = Rvp.value == 0 ? false : true;
-                    if(operationType == "Or")
-                    {
-                        double val = lval || rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
-                    if (operationType == "And")
-                    {
-                        double val = lval && rval ? 1 : 0;
-                        return new ValueProperties(null, VarType.Bool, val);
-                    }
+//                    if (operationType == "GreatherThan")
+//                    {
+//                        double val = lval > rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                    if (operationType == "LessThanOrEqual")
+//                    {
+//                        double val = lval <= rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                    if (operationType == "LessThan")
+//                    {
+//                        double val = lval < rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                    if (operationType == "GreatherThanOrEqual")
+//                    {
+//                        double val = lval >= rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                }
+//            }
+//            if (operationType == "Equal" || operationType == "NotEqual")
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if (((Lvp.type == VarType.Double || Lvp.type == VarType.Int) && (Rvp.type == VarType.Double || Rvp.type == VarType.Int)) || (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool))
+//                {
+//                    var lval = Lvp.value;
+//                    var rval = Rvp.value;
+//                    if (operationType == "Equal")
+//                    {
+//                        double val = lval == rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                    if (operationType == "NotEqual")
+//                    {
+//                        double val = lval != rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                }
+//            }
+//            if (operationType == "Or" || operationType == "And")
+//            {
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool)
+//                {
+//                    bool lval = Lvp.value == 0? false : true ;
+//                    bool rval = Rvp.value == 0 ? false : true;
+//                    if(operationType == "Or")
+//                    {
+//                        double val = lval || rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
+//                    if (operationType == "And")
+//                    {
+//                        double val = lval && rval ? 1 : 0;
+//                        return new ValueProperties(null, VarType.Bool, val);
+//                    }
 
-                }
-            }
+//                }
+//            }
 
-            if (operationType == "Assign")
-            {
+//            if (operationType == "Assign")
+//            {
 
-                ValueProperties Lvp = LExp.GetValue();
-                ValueProperties Rvp = RExp.GetValue();
-                if ((Lvp.type == VarType.Double && (Rvp.type == VarType.Double || Rvp.type == VarType.Int)) || (Lvp.type == VarType.Int && Rvp.type == VarType.Int) || (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool))
-                {
-                    if(!Settings.varDictionary.ContainsKey(Lvp.name))
-                    {
-                        Console.WriteLine("Cannot assign to non declared value!");
-                        Settings.errors++;
-                    }
-                    else
-                    {
-                        Settings.varDictionary[Lvp.name] = (Lvp.type, Rvp.value);
-                        return new ValueProperties(Lvp.name, Lvp.type, Rvp.value);
-                    }
-                }
-            }
-            return new ValueProperties(null, VarType.Undefined, 0);
-        }
+//                ValueProperties Lvp = LExp.GetValue();
+//                ValueProperties Rvp = RExp.GetValue();
+//                if ((Lvp.type == VarType.Double && (Rvp.type == VarType.Double || Rvp.type == VarType.Int)) || (Lvp.type == VarType.Int && Rvp.type == VarType.Int) || (Lvp.type == VarType.Bool && Rvp.type == VarType.Bool))
+//                {
+//                    if(!Settings.varDictionary.ContainsKey(Lvp.name))
+//                    {
+//                        Console.WriteLine("Cannot assign to non declared value!");
+//                        Settings.errors++;
+//                    }
+//                    else
+//                    {
+//                        Settings.varDictionary[Lvp.name] = (Lvp.type, Rvp.value);
+//                        return new ValueProperties(Lvp.name, Lvp.type, Rvp.value);
+//                    }
+//                }
+//            }
+//            return new ValueProperties(null, VarType.Undefined, 0);
+//        }
 
 
         public override string GenCode(StreamWriter sw, bool loadString = false)
@@ -520,30 +519,30 @@ namespace compiler
             if(operationType == "Assign")
             {
                 RExp.GenCode(sw);
-                var Lval = LExp.GetValue();
-                var Rval = RExp.GetValue();
+                var Lval = LExp.CheckType();
+                var Rval = RExp.CheckType();
                 
-                if (Lval.type == VarType.Bool)
+                if (Lval == VarType.Bool)
                 {
                     Settings.EmitCode(sw, "dup");
 
-                    Settings.EmitCode(sw, $"stloc B_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc B_{(LExp as Number).name}");
                 }
-                if (Lval.type == VarType.Double)
+                if (Lval == VarType.Double)
                 {
-                    if(Rval.type== VarType.Int)
+                    if(Rval== VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
                     Settings.EmitCode(sw, "dup");
 
-                    Settings.EmitCode(sw, $"stloc D_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc D_{(LExp as Number).name}");
                 }
-                if (Lval.type == VarType.Int)
+                if (Lval == VarType.Int)
                 {
                     Settings.EmitCode(sw, "dup");
 
-                    Settings.EmitCode(sw, $"stloc I_{Lval.name}");
+                    Settings.EmitCode(sw, $"stloc I_{(LExp as Number).name}");
                 }
               //  Settings.EmitCode(sw, "pop");
 
@@ -582,14 +581,14 @@ namespace compiler
             if (operationType == "Multiplies" || operationType == "Divides" || operationType == "Plus" || operationType == "Minus")
             {
                 bool check = false;
-                var Ltype = LExp.GetValue();
-                var Rtype = RExp.GetValue();
+                var Ltype = LExp.CheckType();
+                var Rtype = RExp.CheckType();
 
-                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                if (Ltype == VarType.Double || Rtype == VarType.Double) { check = true; }
                 LExp.GenCode(sw);
                 if(check)
                 {
-                    if(Ltype.type == VarType.Int)
+                    if(Ltype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -597,7 +596,7 @@ namespace compiler
                 RExp.GenCode(sw);
                 if (check)
                 {
-                    if (Rtype.type == VarType.Int)
+                    if (Rtype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -614,14 +613,14 @@ namespace compiler
             if (operationType == "GreatherThan" || operationType == "LessThanOrEqual" || operationType == "LessThan" || operationType == "GreatherThanOrEqual")
             {
                 bool check = false;
-                var Ltype = LExp.GetValue();
-                var Rtype = RExp.GetValue();
+                var Ltype = LExp.CheckType();
+                var Rtype = RExp.CheckType();
 
-                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                if (Ltype == VarType.Double || Rtype == VarType.Double) { check = true; }
                 LExp.GenCode(sw);
                 if (check)
                 {
-                    if (Ltype.type == VarType.Int)
+                    if (Ltype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -629,7 +628,7 @@ namespace compiler
                 RExp.GenCode(sw);
                 if (check)
                 {
-                    if (Rtype.type == VarType.Int)
+                    if (Rtype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -653,14 +652,14 @@ namespace compiler
             if (operationType == "Equal" || operationType == "NotEqual")
             {
                 bool check = false;
-                var Ltype = LExp.GetValue();
-                var Rtype = RExp.GetValue();
+                var Ltype = LExp.CheckType();
+                var Rtype = RExp.CheckType();
 
-                if (Ltype.type == VarType.Double || Rtype.type == VarType.Double) { check = true; }
+                if (Ltype == VarType.Double || Rtype == VarType.Double) { check = true; }
                 LExp.GenCode(sw);
                 if (check)
                 {
-                    if (Ltype.type == VarType.Int)
+                    if (Ltype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -668,7 +667,7 @@ namespace compiler
                 RExp.GenCode(sw);
                 if (check)
                 {
-                    if (Rtype.type == VarType.Int)
+                    if (Rtype == VarType.Int)
                     {
                         Settings.EmitCode(sw, "conv.r8");
                     }
@@ -976,7 +975,7 @@ namespace compiler
                 {
                     return VarType.Double;
                 }
-                if( (LExpCheckType == VarType.Int && RExpCheckType == VarType.Int) || (RExpCheckType == VarType.Double && RExp.GetValue().value==0))
+                if (LExpCheckType == VarType.Int && RExpCheckType == VarType.Int) //|| (RExpCheckType == VarType.Double && RExp.GetValue().value==0))
                 {
                     return VarType.Int;
                 }
@@ -1037,10 +1036,10 @@ namespace compiler
             }
             exp = _exp;
 
-            if (exp != null)
-            {
-                exp.GetValue();
-            }
+            //if (exp != null)
+            //{
+            //    exp.GetValue();
+            //}
             stat = _stat;
         }
 
@@ -1074,7 +1073,7 @@ namespace compiler
             _exp.CheckType();
             exp = _exp;
 
-            exp.GetValue();
+          //  exp.GetValue();
         }
 
         public WriteStatement(string _str)
@@ -1092,7 +1091,7 @@ namespace compiler
             else if(exp != null)
             {
                 //var str = exp.GenCode(sw);
-                var value = exp.GetValue();
+                var value = exp.CheckType();
                 ExpresionOperation ee = exp as ExpresionOperation;
                 //if(ee != null)
                 //{
@@ -1101,7 +1100,7 @@ namespace compiler
                 //        ee.RExp.GenCode(sw);
                 //    }
                 //}
-                if (value.type == VarType.Double)
+                if (value == VarType.Double)
                 {
                     Settings.EmitCode(sw, "call class [mscorlib] System.Globalization.CultureInfo[mscorlib] System.Globalization.CultureInfo::get_InvariantCulture()");
                     Settings.EmitCode(sw, "ldstr \"{0:0.000000}\" ");
@@ -1110,12 +1109,12 @@ namespace compiler
                     Settings.EmitCode(sw, "call string [mscorlib]System.String::Format(class [mscorlib]System.IFormatProvider,string,object)");
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(string)");                    
                 }
-                if (value.type == VarType.Bool)
+                if (value == VarType.Bool)
                 {
                     exp.GenCode(sw);
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(bool)");
                 }
-                if (value.type == VarType.Int)
+                if (value == VarType.Int)
                 {
                     exp.GenCode(sw);
                     Settings.EmitCode(sw, "call void [mscorlib]System.Console::Write(int32)");
@@ -1133,7 +1132,7 @@ namespace compiler
         {
             _exp.CheckType();
             exp = _exp;
-            exp.GetValue();
+            //exp.GetValue();
  
             stat = _stat;
         }
@@ -1162,7 +1161,7 @@ namespace compiler
         {
             _exp.CheckType();
             exp = _exp;
-            exp.GetValue();
+            //exp.GetValue();
 
             stat = _stat;
             elseStat = _elsestat;
@@ -1228,7 +1227,7 @@ namespace compiler
         {
             _exp.CheckType();
             exp = _exp;
-            exp.GetValue();
+           // exp.GetValue();
         }
 
         public override string GenCode(StreamWriter sw)
